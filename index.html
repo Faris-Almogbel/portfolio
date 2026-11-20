@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faris Almogbel · Portfolio</title>
+<meta name="description" content="Faris Almogbel, software engineering student in Makkah. A portfolio, told as a walk.">
+<meta property="og:title" content="Faris Almogbel · Portfolio">
+<meta property="og:description" content="My story so far, one step at a time.">
+<meta property="og:image" content="assets/og.jpg">
+<meta name="theme-color" content="#e9d7b0">
+<link rel="icon" href="assets/ic_map.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,800;1,9..144,500&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#22160b;--gold:#ffd98a;--paper:#f6ecd8;--accent:#c2416b;--serif:"Fraunces",Georgia,serif;--mono:"IBM Plex Mono",ui-monospace,monospace;--ar:"IBM Plex Sans Arabic",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#e9d7b0;color:var(--ink);font-family:var(--mono);-webkit-font-smoothing:antialiased}
+body.ar{font-family:var(--ar)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img{user-select:none;-webkit-user-drag:none}
+
+#stage{position:fixed;inset:0;overflow:hidden;touch-action:none;cursor:grab}
+#stage.drag{cursor:grabbing}
+.sky{position:absolute;inset:-2% -6% 0 -6%;background-size:cover;background-position:center 70%;will-change:transform,opacity}
+#floor{position:absolute;left:0;right:0;bottom:0;height:22%;background-image:url(assets/floor.webp);background-size:auto 150%;background-repeat:repeat-x;background-blend-mode:multiply;z-index:1}
+#floor::before{content:"";position:absolute;left:0;right:0;top:-10px;height:22px;background:inherit;filter:blur(6px);opacity:.9}
+#world{position:absolute;inset:0;z-index:2;pointer-events:none}
+.it{position:absolute;bottom:0;left:0;will-change:transform;visibility:hidden}
+.it>img{display:block;width:100%;height:100%}
+.it .dim,.it .lit{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;opacity:0}
+.it .dim{background:#140f30}
+.it .lit{background:radial-gradient(ellipse at 50% 45%,rgba(255,196,110,.85),rgba(255,160,70,.25) 60%,transparent 75%);mix-blend-mode:screen}
+.wallseg{position:absolute;bottom:0;left:0;overflow:visible}
+.wallseg>.wl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wallseg.dark>.wl{transform:scaleX(-1);filter:brightness(.62) saturate(.9)}
+.frame,.tool{position:absolute;pointer-events:auto;cursor:pointer;transition:transform .25s}
+.frame:hover,.tool:hover{transform:translateY(-4px)}
+.frame img{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 14px rgba(0,0,0,.45))}
+.frame .in{position:absolute;left:20%;right:20%;top:17%;bottom:17%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:.35em;color:#3a2614}
+.frame .n{font-family:var(--serif);font-weight:800;font-size:var(--fs1);line-height:1}
+.frame .t{font-size:var(--fs2);line-height:1.25}
+.frame .s{font-size:var(--fs3);opacity:.7}
+body.ar .frame .t,body.ar .frame .s{font-family:var(--ar)}
+.tool img{display:block;width:100%;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+.tool .nm{position:absolute;left:50%;top:100%;transform:translate(-50%,8px);white-space:nowrap;font-size:12px;font-weight:600;color:#ffe7b5;background:rgba(30,20,10,.72);padding:3px 8px;border-radius:999px}
+
+#me{position:absolute;z-index:4;bottom:4%;left:0;transform-origin:50% 100%;will-change:transform,left;pointer-events:none}
+#me img{display:block;height:100%;transform-origin:50% 100%}
+#shadow{position:absolute;left:50%;bottom:-2%;width:70%;height:6%;background:radial-gradient(ellipse,rgba(40,20,0,.38),transparent 70%);transform:translateX(-50%)}
+
+#hero{position:absolute;z-index:5;left:6vw;top:18vh;max-width:min(560px,60vw);pointer-events:none}
+#hero h1{font-family:var(--serif);font-weight:800;font-size:clamp(56px,11vw,150px);line-height:.85;letter-spacing:-.02em;color:#fffaf0;text-shadow:0 4px 30px rgba(80,50,10,.35)}
+#hero h1 .sur{display:block;font-family:var(--mono);font-weight:600;font-size:clamp(13px,1.5vw,18px);letter-spacing:.6em;margin-top:18px;color:var(--ink);text-shadow:0 0 10px rgba(255,250,236,.9)}
+body.ar #hero h1{font-family:var(--ar);letter-spacing:0}
+body.ar #hero h1 .sur{font-family:var(--ar);letter-spacing:.2em}
+#hero p{margin-top:16px;font-size:clamp(14px,1.4vw,18px);color:var(--ink);font-weight:600;text-shadow:0 0 12px rgba(255,250,236,.95),0 0 3px rgba(255,250,236,.9)}
+#hero p::before{content:"> ";color:var(--accent)}
+body.ar #hero{left:auto;right:6vw;text-align:right}
+body.ar #hero p::before{content:"< "}
+
+#head{position:absolute;z-index:5;left:6vw;top:12vh;max-width:min(680px,88vw);pointer-events:none;color:var(--ink)}
+#head .w{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(34px,5.4vw,78px);line-height:1.02;letter-spacing:-.01em;opacity:0;transform:translateY(18px);animation:up .7s cubic-bezier(.2,.8,.2,1) forwards}
+#head .w i,#head .w em{font-style:italic;color:var(--accent)}
+#head.sm{top:9vh}
+#head.sm .w{font-size:clamp(26px,3.4vw,50px)}
+#head .sub{font-family:var(--mono);font-size:clamp(13px,1.2vw,16px);margin-top:14px;opacity:0}
+body.ar #head .w{font-family:var(--ar);font-weight:700;letter-spacing:0;line-height:1.25}
+body.ar #head .w em{font-style:normal}
+body.ar #head.sm{top:9vh}
+#head.sm .w{font-size:clamp(26px,3.4vw,50px)}
+#head .sub{font-family:var(--ar)}
+.icons{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;pointer-events:auto}
+.ic{display:inline-flex;align-items:center;gap:9px;padding:10px 16px;border-radius:999px;background:rgba(24,16,44,.55);border:1px solid rgba(255,217,138,.45);color:var(--gold);text-decoration:none;font-size:14px;opacity:0;animation:up .6s forwards;backdrop-filter:blur(4px)}
+.ic:hover{background:rgba(255,217,138,.2)}
+.ic svg{width:17px;height:17px;fill:currentColor}
+
+#cap{position:absolute;z-index:5;pointer-events:none;font-size:clamp(12.5px,1.15vw,15px);line-height:1.55}
+#cap .ln{opacity:0;animation:up .6s forwards}
+#cap .ln::before{content:"> ";color:var(--accent)}
+#cap .lh{font-weight:600;margin-bottom:6px;opacity:0;animation:up .6s forwards}
+body.ar #cap{direction:rtl}
+body.ar #cap .ln::before{content:"< "}
+#cap .by{opacity:0;animation:up .6s forwards;font-size:12px;letter-spacing:.08em}
+@keyframes up{to{opacity:1;transform:none}}
+
+#bar{position:absolute;z-index:8;left:16px;top:14px;display:flex;gap:6px}
+#bar button{display:flex;align-items:center;gap:6px;padding:6px 10px 6px 6px;border-radius:999px;font-weight:600;font-size:14px;color:#fffaf0;text-shadow:0 1px 6px rgba(0,0,0,.4);transition:transform .2s}
+#bar button:hover{transform:translateY(-2px)}
+#bar img{height:38px;width:auto;filter:drop-shadow(0 3px 6px rgba(0,0,0,.3))}
+#prog{position:absolute;z-index:8;left:0;top:0;height:3px;background:var(--accent);width:0}
+#hint{position:absolute;z-index:5;left:0;right:0;bottom:3.5vh;text-align:center;font-size:13px;color:var(--ink);pointer-events:none;transition:opacity .5s}
+
+#load{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:#e9d7b0;font-size:14px;transition:opacity .6s}
+#load.out{opacity:0;pointer-events:none}
+
+/* map */
+#mapv{position:fixed;inset:0;z-index:30;background:radial-gradient(ellipse at 50% 40%,#e2cc9e,#c9ad78);display:none;overflow:auto;-webkit-overflow-scrolling:touch}
+#mapv.on{display:block;animation:fade .35s}
+@keyframes fade{from{opacity:0}}
+#mapv .top{position:sticky;left:0;top:0;display:flex;justify-content:space-between;align-items:center;padding:18px 22px;z-index:3}
+#mapv h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:28px}
+body.ar #mapv h2{font-family:var(--ar);font-style:normal;font-weight:700}
+.pill{padding:10px 18px;border-radius:999px;background:var(--paper);border:2px solid var(--ink);font-weight:600}
+#mapc{position:relative;margin:0 auto 30px;filter:drop-shadow(0 18px 30px rgba(60,35,5,.35))}
+#mapc .bg{display:block;width:100%;height:100%}
+.pin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;opacity:0;animation:pop .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.pin img{display:block;width:100%;filter:drop-shadow(0 6px 6px rgba(50,30,0,.35));transition:transform .25s}
+.pin:hover img{transform:translateY(-6px) scale(1.05)}
+.plb{position:absolute;transform:translate(-50%,4px);z-index:5;pointer-events:none;opacity:0;animation:fade2 .5s forwards;white-space:nowrap;font-family:var(--serif);font-weight:800;font-size:var(--lb);color:#2a1a0c;text-shadow:0 0 6px #f7ead0,0 0 3px #f7ead0,0 0 12px #f7ead0}
+body.ar .plb{font-family:var(--ar);font-weight:700}
+.pin .yh{position:absolute;bottom:100%;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--accent);white-space:nowrap;text-shadow:0 0 6px #f7ead0}
+.pin.here img{filter:drop-shadow(0 0 14px rgba(255,120,170,.9)) drop-shadow(0 6px 6px rgba(50,30,0,.35))}
+@keyframes fade2{to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translate(-50%,-80%) scale(.6)}to{opacity:1;transform:translate(-50%,-100%)}}
+
+/* modal */
+#modal{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:rgba(20,12,4,.55);backdrop-filter:blur(3px);padding:20px}
+#modal.on{display:grid;animation:fade .25s}
+#card{position:relative;width:min(560px,100%);max-height:86vh;overflow:auto;background:var(--paper);border-radius:18px;padding:28px 26px 24px;box-shadow:0 30px 70px rgba(0,0,0,.4)}
+#card h3{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1.1;padding-right:40px}
+body.ar #card h3{font-family:var(--ar);padding-right:0;padding-left:40px}
+#card .m{margin-top:6px;font-size:13px;opacity:.65}
+#card .d{margin-top:16px;line-height:1.65;font-size:15px}
+#card ul{margin-top:14px;padding-inline-start:20px;line-height:1.8;font-size:15px}
+#card .gal{display:grid;gap:10px;margin-top:16px}
+#card .gal img{width:100%;border-radius:10px;display:block}
+#card a.go{display:inline-block;margin-top:18px;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600}
+#card .x{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.07);font-size:20px}
+body.ar #card .x{right:auto;left:16px}
+body.ar #card{direction:rtl}
+
+@media (max-width:699px){
+  #hero{top:13vh;max-width:70vw}
+  #head{top:9vh}
+  #bar img{height:32px}
+}
+@media (prefers-reduced-motion:reduce){
+  #head .w,#cap .ln,.ic,.pin{animation-duration:.01s}
+}
+</style>
+</head>
+<body>
+<div id="load">loading the walk…</div>
+
+<div id="stage">
+  <div class="sky" id="sk0"></div>
+  <div class="sky" id="sk1" style="opacity:0"></div>
+  <div class="sky" id="sk2" style="opacity:0"></div>
+  <div id="floor"></div>
+  <div id="world"></div>
+  <div id="me"><div id="shadow"></div><img id="meimg" src="assets/me.webp" alt="Faris"></div>
+  <div id="hero"><h1 id="h1"></h1><p id="t1"></p><p id="t2"></p></div>
+  <div id="head"></div>
+  <div id="cap"></div>
+  <div id="hint"></div>
+</div>
+
+<div id="prog"></div>
+<div id="bar">
+  <button id="lang" aria-label="Switch language"><img src="assets/ic_globe.webp" alt=""><span id="langl"></span></button>
+  <button id="mapb" aria-label="Open the map"><img src="assets/ic_map.webp" alt=""><span id="mapl"></span></button>
+</div>
+
+<div id="mapv" role="dialog" aria-modal="true" aria-label="Map">
+  <div class="top"><h2 id="mh"></h2><button class="pill" id="mapx"></button></div>
+  <div id="mapc"></div>
+</div>
+
+<div id="modal" role="dialog" aria-modal="true"><div id="card"><button class="x" id="cx" aria-label="Close">×</button><h3 id="ct"></h3><div class="m" id="cm"></div><div class="d" id="cd"></div><ul id="cl"></ul><div class="gal" id="cg"></div><a class="go" id="ca" target="_blank" rel="noopener"></a></div></div>
+
+<script>
+(function(){
+/* ============================================================
+   DATA: all content lives here. Edit text, links or images here.
+   ============================================================ */
+var DATA={
+ contact:{email:"faris.almogbel1@gmail.com",phone:"+966506150123",phoneLabel:"+966 50 615 0123",
+   linkedin:"https://linkedin.com/in/faris-almogbel",github:"https://github.com/Faris-Almogbel"},
+ ui:{
+  en:{map:"map",close:"close ×",route:"The route",hint:"drag, swipe or scroll to start walking →",here:"you are here",
+      name:"FARIS",sur:"ALMOGBEL",t1:"Software engineering student. I build things people actually use.",t2:"my story so far, one step at a time.",
+      start:"The start",email:"Email",phone:"Phone",by:"Built by Faris Almogbel",lang:"ع",open:"Open link",loading:"loading the walk…"},
+  ar:{map:"الخريطة",close:"إغلاق ×",route:"الخريطة",hint:"اسحب أو مرّر عشان تمشي معي →",here:"موقعك",
+      name:"فارس",sur:"المقبل",t1:"طالب هندسة برمجيات، أبني أشياء ينتفع فيها الناس فعلاً.",t2:"قصتي لين الحين، خطوة بخطوة.",
+      start:"البداية",email:"البريد",phone:"الجوال",by:"تم البناء بواسطة فارس المقبل",lang:"EN",open:"افتح الرابط",loading:"…"}
+ },
+ stops:[
+  {id:"uqu",type:"building",img:"uqu",h:.5,sky:0,night:0,floor:"#fff1d6",map:"m_uqu",
+   name:{en:"Umm Al-Qura University",ar:"جامعة أم القرى"},
+   hl:{en:["Where it","<i>started.</i>"],ar:["من وين","<em>بدأت.</em>"]},
+   ln:{en:[["Umm Al-Qura University · B.Sc. Software Engineering · 2023 – 2027 (expected)","Makkah, Saudi Arabia"]],
+       ar:[["جامعة أم القرى · بكالوريوس هندسة البرمجيات · 2023 – 2027 (متوقع)","مكة المكرمة، السعودية"]]}},
+  {id:"kidana",type:"building",img:"kidana",h:.5,sky:0,night:0,floor:"#ffe9c8",map:"m_kidana",
+   name:{en:"KIDANA",ar:"كدانة"},
+   hl:{en:["Where I","<i>work.</i>"],ar:["وين","<em>أشتغل.</em>"]},
+   hl2:{en:["What I","<i>built.</i>"],ar:["وش","<em>بنيت.</em>"]},
+   ln:{en:[["KIDANA · IT Intern, Smart Solutions & Cities · Jul 2026 – present","Internal apps, dashboards and system integrations"],
+           ["Digital solutions with Microsoft Power Platform and web tech","A Hajj countdown app for the company's reception display · HTML, CSS, JavaScript"]],
+       ar:[["كدانة · متدرب تقنية معلومات، الحلول الذكية والمدن · يوليو 2026 – الآن","تطبيقات داخلية ولوحات بيانات وربط أنظمة"],
+           ["حلول رقمية بـ Microsoft Power Platform وتقنيات الويب","تطبيق عدّاد تنازلي للحج لشاشة الاستقبال في الشركة · HTML وCSS وJavaScript"]]}},
+  {id:"wasl",type:"building",img:"wasl",h:.46,sky:1,night:.35,floor:"#f2c39a",map:"m_wasl",
+   name:{en:"Wasl",ar:"وصل"},link:"https://linktr.ee/WaslUqu",showLink:false,
+   hl:{en:["What I","<i>led.</i>"],ar:["المشروع اللي","<em>قدته.</em>"]},
+   ln:{en:[["Wasl · graduation project · a student transportation & accommodation platform · Aug 2025 – Jun 2026","Led it end to end: requirements, SRS, architecture, UML, frontend","Flutter · Spring Boot · PostgreSQL · Figma · Frame0"]],
+       ar:[["وصل · مشروع التخرج · منصة لنقل وسكن الطلاب · أغسطس 2025 – يونيو 2026","قدته من البداية للنهاية: المتطلبات، وثيقة SRS، المعمارية، UML، والواجهة","Flutter · Spring Boot · PostgreSQL · Figma · Frame0"]]}},
+  {id:"certs",type:"wall",sky:2,night:1,floor:"#4a4470",map:"m_gallery",
+   name:{en:"Certificates",ar:"الشهادات"},
+   hl:{en:["Where I kept","<i>learning.</i>"],ar:["وين كمّلت","<em>أتعلم.</em>"]},
+   sub:{en:"Tap a frame to open it.",ar:"اضغط على برواز عشان يفتح."},ln:{en:[[]],ar:[[]]}},
+  {id:"projects",type:"bench",sky:2,night:1,floor:"#3d3860",map:"m_bench",
+   name:{en:"Projects",ar:"مشاريعي"},
+   hl:{en:["Things I","<i>built.</i>"],ar:["أشياء","<em>بنيتها.</em>"]},
+   sub:{en:"Tap an object to open it.",ar:"اضغط على أي غرض عشان يفتح."},
+   lnh:{en:"My skills:",ar:"مهاراتي:"},
+   ln:{en:[["Languages: Python, Java, JavaScript, SQL, HTML, CSS, PHP","Frameworks: Flutter, Spring Boot, Next.js, PostgreSQL","Power Platform: Power Apps, Power Automate, Power BI, Dataverse","Design & docs: UML, SRS, Figma, Jira, Git"]],
+       ar:[["اللغات: Python، Java، JavaScript، SQL، HTML، CSS، PHP","الأطر: Flutter، Spring Boot، Next.js، PostgreSQL","منصة Power: Power Apps، Power Automate، Power BI، Dataverse","التصميم والتوثيق: UML، SRS، Figma، Jira، Git"]]}},
+  {id:"end",type:"end",sky:2,night:1,floor:"#3a3557",map:"m_mail",
+   name:{en:"Say hi",ar:"تواصل معي"},
+   hl:{en:["That's the road so far.","Let's <i>talk.</i>"],ar:["هذا المشوار لين الحين،","<em>خلّنا نتكلم.</em>"]},ln:{en:[[]],ar:[[]]}}
+ ],
+ certs:[
+  {n:{en:"Cisco",ar:"سيسكو"},t:{en:"Engaging Stakeholders for Success",ar:"Engaging Stakeholders for Success"},s:{en:"Dec 2024",ar:"ديسمبر 2024"},
+   m:{en:"Cisco Networking Academy · December 2024",ar:"أكاديمية سيسكو · ديسمبر 2024"}},
+  {n:{en:"Satr · Tuwaiq",ar:"سطر · طويق"},t:{en:"UX/UI",ar:"تصميم تجربة وواجهة المستخدم"},s:{en:"May 2025",ar:"مايو 2025"},
+   m:{en:"Satr platform with Tuwaiq Academy · May 2025",ar:"منصة سطر مع أكاديمية طويق · مايو 2025"}},
+  {n:{en:"Oracle",ar:"أوراكل"},t:{en:"CX Process Essentials",ar:"CX Process Essentials"},s:{en:"Apr 2026",ar:"أبريل 2026"},
+   m:{en:"Oracle · April 2026",ar:"أوراكل · أبريل 2026"}}
+ ],
+ projects:[
+  {img:"p_securefile",n:"Secure File Management",m:{en:"Power Apps · Power Automate · Power BI",ar:"Power Apps · Power Automate · Power BI"},
+   d:{en:"An internal file-sharing solution that generates unique links and QR codes so files reach only the intended recipients. I built the QR code generation with custom code and a Power BI dashboard that tracks sharing activity across departments, internal and external.",
+      ar:"حل داخلي لمشاركة الملفات يولّد روابط ورموز QR خاصة عشان الملف يوصل للشخص المقصود بس. بنيت توليد رموز QR بكود مخصص، ولوحة Power BI تتابع نشاط المشاركة بين الإدارات داخلياً وخارجياً."},
+   images:[],link:""},
+  {img:"p_washroom",n:"Smart Washroom Dashboard",m:{en:"Next.js · PHP · JavaScript · Webhooks · IoT sensors",ar:"Next.js · PHP · JavaScript · Webhooks · حساسات IoT"},
+   d:{en:"An IoT dashboard for smart washroom sensors. I wrote the backend logic that validates, classifies and stores sensor data, and built responsive dashboard screens with real-time updates through webhooks.",
+      ar:"لوحة متابعة لحساسات دورات المياه الذكية. كتبت منطق الباك إند اللي يتحقق من بيانات الحساسات ويصنّفها ويخزّنها، وبنيت واجهات متجاوبة تتحدث لحظياً عن طريق Webhooks."},
+   images:[],link:""},
+  {img:"p_meeting",n:"Meeting Countdown",m:{en:"Windows app · WPF · C# / .NET · Outlook calendar",ar:"تطبيق ويندوز · WPF · C# / .NET · تقويم Outlook"},
+   d:{en:"A native Windows app that reads the meetings from your Outlook calendar and shows a live countdown for the meeting in progress: green, then amber at 15 minutes and red at 5. It lists the next meetings, hides the titles of private ones, and has a full-screen room-display mode for meeting rooms.",
+      ar:"تطبيق ويندوز يسحب الاجتماعات من تقويم Outlook حقك ويعرض عدّاد تنازلي مباشر للاجتماع الحالي: أخضر، ثم برتقالي إذا بقى 15 دقيقة، وأحمر إذا بقى 5. يعرض الاجتماعات الجاية، ويخفي عناوين الاجتماعات الخاصة، وفيه وضع شاشة كاملة لقاعات الاجتماعات."},
+   images:[],link:""},
+  {img:"m_wasl",n:"Wasl",hidden:true,m:{en:"Flutter · Spring Boot · PostgreSQL",ar:"Flutter · Spring Boot · PostgreSQL"},
+   d:{en:"Graduation project: a platform for university students' transportation and accommodation.",ar:"مشروع التخرج: منصة لنقل وسكن طلاب الجامعة."},
+   images:[],link:""}
+ ],
+ // map pin positions as fractions of map.webp (measured from the image)
+ mapPts:[[.125,.47],[.19,.66],[.37,.44],[.50,.58],[.685,.55],[.875,.46],[.80,.76]]
+};
+
+/* ============================================================ */
+var $=function(i){return document.getElementById(i)};
+var IMGS=["sky-day","sky-sunset","sky-night","floor","me","uqu","kidana","wasl","palm","acacia","wall","frame","table","p_securefile","p_washroom","p_meeting","map","m_uqu","m_kidana","m_wasl","m_gallery","m_bench","m_mail","ic_globe","ic_map"];
+var R={};
+var lang="en";try{lang=localStorage.getItem("fa_lang")||"en"}catch(e){}
+var hm=(location.hash||"").match(/lang=(en|ar)/);if(hm)lang=hm[1];
+var ICON={
+ mail:'<svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm1.5 2 7.5 5.6L19.5 7h-15zM4 9.1V17h16V9.1l-8 6-8-6z"/></svg>',
+ phone:'<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.6a1 1 0 0 1-.25 1z"/></svg>',
+ li:'<svg viewBox="0 0 24 24"><path d="M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm2.3 7.3V18h2.5v-7.7H6.3zm1.25-3.8a1.45 1.45 0 1 0 0 2.9 1.45 1.45 0 0 0 0-2.9zM10.6 10.3V18h2.5v-4c0-1.1.4-1.9 1.5-1.9s1.4.9 1.4 2V18h2.5v-4.5c0-2.4-1.3-3.4-3-3.4-1.3 0-2 .7-2.4 1.3v-1.1h-2.5z"/></svg>',
+ code:'<svg viewBox="0 0 24 24"><path d="M8.7 16.3 4.4 12l4.3-4.3-1.4-1.4L1.6 12l5.7 5.7 1.4-1.4zm6.6 0 4.3-4.3-4.3-4.3 1.4-1.4 5.7 5.7-5.7 5.7-1.4-1.4z"/></svg>'
+};
+
+var stage=$("stage"),world=$("world"),me=$("me"),meimg=$("meimg");
+var W,H,mob,gx,gh,heroX,heroK,pos=0,target=0,lastT=0,els=[],maxP=1,cur="",nightV=-1,toolEls=[],frameEls=[];
+var STOPS=DATA.stops;
+
+function mk(tag,cls,parent){var e=document.createElement(tag);if(cls)e.className=cls;if(parent)parent.appendChild(e);return e}
+function ratio(n){return R[n]?R[n].h/R[n].w:1}
+
+function addImg(name,x,h,opt){
+  opt=opt||{};var bh=H*h,bw=bh/ratio(name);
+  var el=mk("div","it",world);el.style.width=bw+"px";el.style.height=bh+"px";el.style.bottom=(opt.bottom!=null?opt.bottom:H*.2)+"px";
+  var im=mk("img","",el);im.src="assets/"+name+".webp";im.alt="";
+  if(opt.flip)im.style.transform="scaleX(-1)";
+  var dim=null,lit=null;
+  if(!opt.deco||true){dim=mk("div","dim",el);dim.style.webkitMaskImage=dim.style.maskImage="url(assets/"+name+".webp)";if(opt.flip)dim.style.transform="scaleX(-1)"}
+  if(opt.lit){lit=mk("div","lit",el);lit.style.webkitMaskImage=lit.style.maskImage="url(assets/"+name+".webp)"}
+  var it={el:el,x:x-(opt.center?bw/2:0),w:bw,dim:dim,lit:lit};els.push(it);return it;
+}
+function deco(cx,big){
+  addImg("palm",cx-W*.06,big?.6:.52,{bottom:H*.2-6,center:true});
+  addImg("acacia",cx+W*.05,(W*.24*ratio("acacia"))/H,{bottom:H*.2-8,center:true,flip:big});
+}
+
+function build(){
+  W=innerWidth;H=innerHeight;mob=W<700;
+  gh=H*(mob?.3:.34);gx=W*(mob?.24:.22);heroK=mob?1.55:1.85;heroX=mob?W*.7:W*.72;
+  me.style.height=gh+"px";me.style.width=(gh/ratio("me"))+"px";
+  world.innerHTML="";els=[];toolEls=[];frameEls=[];
+  var x=W*1.1;
+  deco(W*.93,true);
+  STOPS.forEach(function(s,i){
+    s.items=[];
+    if(s.type=="building"){
+      var it=addImg(s.img,x,s.h,{lit:true});s.items.push(it);
+      s.x0=x;s.x1=x+it.w;s.cx=x+it.w/2;x+=it.w+W*.55;
+      if(STOPS[i+1]&&STOPS[i+1].type=="building")deco(x-W*.275,i%2==0);
+      else deco(x-W*.33,false);
+    }else if(s.type=="wall"||s.type=="bench"){
+      var ww=H/ratio("wall"),seg=mk("div","wallseg"+(s.type=="bench"?" dark":""),world);
+      seg.style.width=(ww+2)+"px";seg.style.height=H+"px";
+      var wl=mk("img","wl",seg);wl.src="assets/wall.webp";wl.alt="";
+      var wit={el:seg,x:x,w:ww,dim:null,lit:null,wall:1};els.push(wit);s.items.push(wit);
+      if(s.type=="wall"){
+        var fh=H*(mob?.24:.28),fw=fh/ratio("frame"),fs=fh/10;
+        [.172,.5,.83].forEach(function(lx,k){
+          var f=mk("div","frame",seg);f.dataset.i=k;
+          f.style.cssText="left:"+(lx*ww-fw/2)+"px;top:"+(H*(mob?.42:.37))+"px;width:"+fw+"px;height:"+fh+"px;--fs1:"+(fs*1.05)+"px;--fs2:"+(fs*.62)+"px;--fs3:"+(fs*.52)+"px";
+          mk("img","",f).src="assets/frame.webp";mk("div","in",f);
+          f.setAttribute("role","button");f.tabIndex=0;frameEls.push(f);
+        });
+      }else{
+        var tw=ww*.66,th=tw*ratio("table"),tl=ww/2-tw/2,tb=H*.05;
+        var tb_=mk("img","",seg);tb_.src="assets/table.webp";tb_.style.cssText="position:absolute;left:"+tl+"px;bottom:"+tb+"px;width:"+tw+"px;height:"+th+"px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.5))";
+        var vis=DATA.projects.filter(function(p){return !p.hidden}),n=vis.length,topY=tb+th*.93,oh=H*.15;
+        vis.forEach(function(p,k){
+          var t=mk("div","tool",seg),w=oh/ratio(p.img);
+          t.dataset.i=DATA.projects.indexOf(p);
+          t.style.cssText="left:"+(tl+tw*(k+1)/(n+1)-w/2)+"px;bottom:"+topY+"px;width:"+w+"px";
+          mk("img","",t).src="assets/"+p.img+".webp";var nm=mk("div","nm",t);nm.textContent=p.n;
+          t.setAttribute("role","button");t.tabIndex=0;t.setAttribute("aria-label",p.n);toolEls.push(t);
+        });
+        s.tblTop=topY;
+      }
+      s.x0=x;s.x1=x+ww;s.cx=x+ww/2;x+=ww;
+      if(s.type=="bench")x+=W*.25;
+    }else if(s.type=="end"){
+      s.x0=x+W*.2;s.cx=x+W*.5;s.x1=s.cx;x=s.cx+W*.5;
+    }
+  });
+  STOPS.forEach(function(s){s.p=s.type=="end"?s.cx-W*.5:s.cx-W*.5;s.r=Math.max((s.x1-s.x0)/2,W*.3)+W*.12});
+  maxP=STOPS[STOPS.length-1].p;
+  target=Math.min(target,maxP);pos=Math.min(pos,maxP);
+  fillText();nightV=-1;cur="";
+}
+
+function fillText(){
+  frameEls.forEach(function(f,i){var c=DATA.certs[i];f.querySelector(".in").innerHTML='<div class="n">'+c.n[lang]+'</div><div class="t">'+c.t[lang]+'</div><div class="s">'+c.s[lang]+'</div>';f.setAttribute("aria-label",c.n[lang]+" · "+c.t[lang])});
+}
+
+function hex(h){return[parseInt(h.substr(1,2),16),parseInt(h.substr(3,2),16),parseInt(h.substr(5,2),16)]}
+function mix(a,b,t){a=hex(a);b=hex(b);return"rgb("+[0,1,2].map(function(i){return Math.round(a[i]+(b[i]-a[i])*t)}).join(",")+")"}
+function ease(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)}
+
+function blend(p){
+  var s=[{p:0,sky:0,floor:"#fff1d6",night:0}].concat(STOPS),i=0;
+  for(;i<s.length-1;i++){if(p<=s[i+1].p)break}
+  var A=s[i],B=s[Math.min(i+1,s.length-1)],span=(B.p-A.p)||1,t=ease(((p-A.p)/span-.2)/.6);
+  return{A:A,B:B,t:t};
+}
+function zoneAt(p){var best=null,bd=1e9;STOPS.forEach(function(s){var d=Math.abs(p-s.p);if(d<s.r&&d<bd){bd=d;best=s}});return best}
+
+function setText(z,pg){
+  var key=z?z.id+lang+pg:"none"+lang;if(key===cur)return;cur=key;
+  var h=$("head"),c=$("cap");h.innerHTML="";c.innerHTML="";
+  h.classList.toggle("sm",!!(z&&(z.type=="wall"||z.type=="bench")));
+  if(!z)return;
+  var T=DATA.ui[lang];
+  ((pg&&z.hl2)?z.hl2:z.hl)[lang].forEach(function(t,i){var s=mk("span","w",h);s.style.animationDelay=(i*.15)+"s";s.innerHTML=t});
+  if(z.sub){var sb=mk("div","sub",h);sb.textContent=z.sub[lang];sb.style.animation="up .6s .45s forwards"}
+  if(z.type=="end"){
+    var C=DATA.contact,ic=mk("div","icons",h);
+    [["mailto:"+C.email,ICON.mail,T.email],["tel:"+C.phone,ICON.phone,C.phoneLabel],[C.linkedin,ICON.li,"LinkedIn"],[C.github,ICON.code,"GitHub"]].forEach(function(a,k){
+      var e=mk("a","ic",ic);e.href=a[0];if(a[0].indexOf("http")==0){e.target="_blank";e.rel="noopener"}
+      e.style.animationDelay=(.6+k*.12)+"s";e.innerHTML=a[1]+"<span></span>";e.lastChild.textContent=a[2];if(a[2]==C.phoneLabel)e.lastChild.dir="ltr";
+    });
+    var by=mk("div","by",c);by.textContent=T.by;by.style.animationDelay="1.1s";
+  }else{
+    if(z.lnh){var lh=mk("div","lh",c);lh.textContent=z.lnh[lang];lh.style.animationDelay=".4s"}
+    var L=z.ln[lang][Math.min(pg,z.ln[lang].length-1)]||[];
+    L.forEach(function(t,i){var d=mk("div","ln",c);d.style.animationDelay=(.5+i*.18)+"s";d.textContent=t});
+  }
+  layoutCap(z);
+}
+function layoutCap(z){
+  var c=$("cap").style,h=$("head");c.left=c.right=c.top=c.bottom="";c.maxWidth="";c.textAlign="";
+  var ar=lang=="ar";
+  if(!z)return;
+  if(z.type=="end"){c.left=ar?"":"6vw";c.right=ar?"6vw":"";c.bottom="3vh";return}
+  if(mob||z.type=="wall"){
+    c.left="6vw";c.right="6vw";c.top=(h.offsetTop+h.offsetHeight+14)+"px";return;
+  }
+  if(z.type=="bench"){c.right="5vw";c.top="13vh";c.maxWidth="min(430px,38vw)";return}
+  var mw=gh/ratio("me"),left=gx+mw*.55+26;
+  c.left=left+"px";c.maxWidth=Math.min(760,W-left-30)+"px";c.top=(H*.82)+"px";
+}
+
+function update(t){
+  requestAnimationFrame(update);
+  var dt=Math.min(.05,(t-lastT)/1000||0);lastT=t;
+  var d=target-pos;pos+=d*Math.min(1,dt*7);if(Math.abs(d)<.3)pos=target;
+  var moving=Math.abs(d)>1.5;
+  for(var i=0;i<els.length;i++){var it=els[i],sx=it.x-pos,v=sx<W+60&&sx+it.w>-60;if(v!==it.v){it.v=v;it.el.style.visibility=v?"visible":"hidden"}if(v)it.el.style.transform="translate3d("+sx+"px,0,0)"}
+  var b=blend(pos),w=[0,0,0];w[b.A.sky]+=1-b.t;w[b.B.sky]+=b.t;
+  $("sk1").style.opacity=w[1];$("sk2").style.opacity=w[2];
+  var px=-(pos/Math.max(1,maxP))*W*.05;
+  ["sk0","sk1","sk2"].forEach(function(k){$(k).style.transform="translate3d("+px+"px,0,0)"});
+  $("floor").style.backgroundColor=mix(b.A.floor,b.B.floor,b.t);
+  $("floor").style.backgroundPosition=(-pos)+"px 40%";
+  var n=b.A.night*(1-b.t)+b.B.night*b.t;
+  if(Math.abs(n-nightV)>.01){nightV=n;
+    els.forEach(function(it){if(it.dim)it.dim.style.opacity=.42*n;if(it.lit)it.lit.style.opacity=.55*n});
+    meimg.style.filter="brightness("+(1-.18*n)+")";
+    var ink=mix("#22160b","#ffd98a",ease((n-.3)/.5));$("head").style.color=ink;$("cap").style.color=ink;$("hint").style.color=ink;
+    var glow=n>.5?"0 0 18px rgba(255,180,80,.45), 0 1px 3px rgba(0,0,0,.6)":"0 0 14px rgba(255,248,230,.95), 0 0 4px rgba(255,248,230,.9)";
+    $("cap").style.textShadow=glow;$("head").style.textShadow=n>.5?"0 0 26px rgba(255,180,80,.4)":"0 0 18px rgba(255,250,235,.8)";
+  }
+  // intro → walk → end
+  var e=ease(pos/(W*.7));
+  $("hero").style.opacity=Math.max(0,1-e*1.8);
+  var z=e<.8?null:zoneAt(pos),pg=0;
+  if(z&&z.hl2)pg=pos>z.p+W*.04?1:0;
+  setText(z,pg);
+  $("prog").style.width=(pos/maxP*100)+"%";
+  var eE=ease((pos-(maxP-W*.6))/(W*.55));
+  var inside=STOPS.filter(function(s){return s.type=="wall"||s.type=="bench"}),ins=0;
+  if(inside.length){var a=inside[0],bb=inside[inside.length-1];ins=ease((pos-(a.p-W*.45))/(W*.35))*ease((bb.p+W*.5-pos)/(W*.35))}
+  var hx=lang=="ar"?W*(mob?.3:.28):heroX,gxB=hx+(gx-hx)*e,endX=mob?W*.74:W*.68,x=gxB+(endX-gxB)*eE;
+  var k=(heroK+(1-heroK)*e)*(1+.22*eE)*(1-.08*ins);
+  me.style.left=x+"px";
+  var ph=t/1000*(moving?11:1.6),by=moving?-Math.abs(Math.sin(ph))*gh*.022:Math.sin(ph)*gh*.003,rot=moving?Math.sin(ph)*1.5:0;
+  var dir=target<pos-.5?-1:1;if(!moving)dir=+(me.dataset.dir||1);me.dataset.dir=dir;
+  meimg.style.transform="translateY("+by+"px) rotate("+rot+"deg) scaleX("+dir+")";
+  me.style.transform="translateX(-50%) scale("+k+")";
+  $("shadow").style.transform="translateX(-50%) scaleX("+(1-(moving?Math.abs(Math.sin(ph))*.12:0))+")";
+  $("hint").style.opacity=pos>60?0:.85;
+}
+
+function go(p){target=Math.max(0,Math.min(maxP,p))}
+
+/* ---------- modal ---------- */
+var lastFocus=null;
+function openModal(o){
+  lastFocus=document.activeElement;
+  $("ct").textContent=o.t;$("cm").textContent=o.m||"";$("cd").textContent=o.d||"";$("cd").style.display=o.d?"":"none";
+  $("cl").innerHTML="";(o.list||[]).forEach(function(x){mk("li","",$("cl")).textContent=x});$("cl").style.display=(o.list&&o.list.length)?"":"none";
+  $("cg").innerHTML="";(o.images||[]).forEach(function(s){var im=mk("img","",$("cg"));im.src=s;im.alt=o.t;im.loading="lazy"});
+  var a=$("ca");if(o.link){a.href=o.link;a.textContent=DATA.ui[lang].open;a.style.display=""}else a.style.display="none";
+  $("modal").classList.add("on");$("cx").focus();
+}
+function closeModal(){$("modal").classList.remove("on");if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+function openCert(i){var c=DATA.certs[i];openModal({t:c.t[lang],m:c.m[lang]})}
+function openProj(i){var p=DATA.projects[i];openModal({t:p.n,m:p.m[lang],d:p.d[lang],images:p.images,link:p.link})}
+$("cx").onclick=closeModal;$("modal").onclick=function(e){if(e.target===$("modal"))closeModal()};
+$("modal").addEventListener("keydown",function(e){if(e.key=="Tab"){var f=[].slice.call($("card").querySelectorAll("button,a[href]")).filter(function(x){return x.offsetParent});if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+
+/* ---------- map ---------- */
+function openMap(){
+  var T=DATA.ui[lang],c=$("mapc");c.innerHTML="";
+  $("mh").textContent=T.route;$("mapx").textContent=T.close;
+  var vw=innerWidth,ar=ratio("map"),mw,mh;
+  if(vw<700){mh=Math.max(330,Math.min(innerHeight-120,560));mw=mh/ar;c.style.margin="0 0 20px"}
+  else{mw=Math.min(1180,vw-48,(innerHeight-110)/ar);mh=mw*ar;c.style.margin="0 auto 30px"}
+  c.style.width=mw+"px";c.style.height=mh+"px";c.style.setProperty("--lb",Math.max(12,Math.min(19,mw*.016))+"px");
+  var bg=mk("img","bg",c);bg.src="assets/map.webp";bg.alt="";
+  var all=[{name:T.start,p:0,img:"me"}].concat(STOPS.map(function(s){return{name:s.name[lang],p:s.p,img:s.map}}));
+  var here=0;all.forEach(function(a,i){if(a.p<=target+W*.3)here=i});
+  all.forEach(function(a,i){
+    var pt=DATA.mapPts[i],b=mk("button","pin"+(i==here?" here":""),c);
+    var w=i==0?mw*.03:mw*.095;b.style.width=w+"px";b.style.left=(pt[0]*mw)+"px";b.style.top=(pt[1]*mh)+"px";
+    b.style.animationDelay=(.1+i*.09)+"s";b.setAttribute("aria-label",a.name);
+    if(i==here){var y=mk("span","yh",b);y.textContent=T.here}
+    var im=mk("img","",b);im.src="assets/"+a.img+".webp";im.alt="";
+    var l=mk("span","plb",c);l.textContent=a.name;l.style.left=(pt[0]*mw)+"px";l.style.top=(pt[1]*mh)+"px";l.style.animationDelay=(.3+i*.09)+"s";
+    b.onclick=function(){closeMap();go(a.p)};
+  });
+  $("mapv").classList.add("on");
+  $("mapv").scrollLeft=vw<700?Math.max(0,DATA.mapPts[here][0]*mw-vw/2):0;
+  $("mapx").focus();
+}
+function closeMap(){$("mapv").classList.remove("on");$("mapb").focus()}
+$("mapb").onclick=openMap;$("mapx").onclick=closeMap;
+
+/* ---------- language ---------- */
+function applyLang(){
+  var T=DATA.ui[lang];document.documentElement.lang=lang;document.body.classList.toggle("ar",lang=="ar");
+  $("h1").innerHTML="";$("h1").appendChild(document.createTextNode(T.name));var su=mk("span","sur",$("h1"));su.textContent=T.sur;
+  $("t1").textContent=T.t1;$("t2").textContent=T.t2;$("hint").textContent=T.hint;$("langl").textContent=T.lang;$("mapl").textContent=T.map;
+  $("load").textContent=T.loading;fillText();cur="";
+  if($("mapv").classList.contains("on"))openMap();
+}
+$("lang").onclick=function(){lang=lang=="en"?"ar":"en";try{localStorage.setItem("fa_lang",lang)}catch(e){}applyLang()};
+
+/* ---------- input ---------- */
+var drag=false,lx=0,dx0=0,dy0=0;
+stage.addEventListener("pointerdown",function(e){drag=true;lx=dx0=e.clientX;dy0=e.clientY;stage.classList.add("drag");try{stage.setPointerCapture(e.pointerId)}catch(x){}});
+stage.addEventListener("pointermove",function(e){if(!drag)return;var dx=e.clientX-lx;lx=e.clientX;go(target-dx*1.4)});
+function up(e){var was=drag;drag=false;stage.classList.remove("drag");
+  if(was&&e.type=="pointerup"&&Math.abs(e.clientX-dx0)<6&&Math.abs(e.clientY-dy0)<6){
+    var el=document.elementFromPoint(e.clientX,e.clientY),f=el&&el.closest(".frame"),tl=el&&el.closest(".tool");
+    if(f)openCert(+f.dataset.i);else if(tl)openProj(+tl.dataset.i);
+  }}
+stage.addEventListener("pointerup",up);stage.addEventListener("pointercancel",up);
+stage.addEventListener("keydown",function(e){if(e.key=="Enter"||e.key==" "){var f=e.target.closest(".frame"),tl=e.target.closest(".tool");if(f)openCert(+f.dataset.i);if(tl)openProj(+tl.dataset.i)}});
+addEventListener("wheel",function(e){if($("mapv").classList.contains("on")||$("modal").classList.contains("on"))return;e.preventDefault();go(target+(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*1.1)},{passive:false});
+addEventListener("keydown",function(e){
+  if(e.key=="Escape"){if($("modal").classList.contains("on"))closeModal();else if($("mapv").classList.contains("on"))closeMap();return}
+  if($("mapv").classList.contains("on")||$("modal").classList.contains("on"))return;
+  if(e.key=="ArrowRight"||e.key=="ArrowDown"||e.key=="PageDown"){e.preventDefault();go(target+W*.18)}
+  else if(e.key=="ArrowLeft"||e.key=="ArrowUp"||e.key=="PageUp"){e.preventDefault();go(target-W*.18)}
+  else if(e.key=="Home")go(0);else if(e.key=="End")go(maxP);
+});
+var rz=0;addEventListener("resize",function(){clearTimeout(rz);rz=setTimeout(function(){var f=maxP?pos/maxP:0;build();pos=target=f*maxP;if($("mapv").classList.contains("on"))openMap()},140)});
+
+/* ---------- boot ---------- */
+function ready(){
+  ["sky-day","sky-sunset","sky-night"].forEach(function(s,i){$("sk"+i).style.backgroundImage="url(assets/"+s+".webp)"});
+  build();applyLang();
+  var m=(location.hash||"").match(/at=(\w+)/);
+  if(m){var s=STOPS.filter(function(z){return z.id==m[1]})[0];if(s)pos=target=s.p}
+  requestAnimationFrame(update);$("load").classList.add("out");
+}
+var cnt=0;
+IMGS.forEach(function(s){var im=new Image();im.onload=function(){R[s]={w:im.naturalWidth,h:im.naturalHeight};if(++cnt==IMGS.length)ready()};im.onerror=function(){R[s]={w:1,h:1};if(++cnt==IMGS.length)ready()};im.src="assets/"+s+".webp"});
+})();
+</script>
+</body>
+</html>
