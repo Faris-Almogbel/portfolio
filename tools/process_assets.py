@@ -154,7 +154,68 @@ def save(im, name, q=84, maxside=None):
     return im.size
 
 
-def kidana_logo(b):
+def tile_strip(src, height, width):
+    """Scale an ornament strip to `height` and repeat its period seamlessly to `width`."""
+    a = np.asarray(src).astype(np.float32) / 255
+    sc0 = height / a.shape[0]
+    k = max(1, int(1.15 / sc0))         # thicken hairlines so they survive the downscale
+    a = ndimage.maximum_filter(a, size=k)
+    col = a.sum(0)
+    c = col - col.mean()
+    ac = np.correlate(c, c, "full")[len(c) - 1:]
+    lo = len(c) // 12
+    per = lo + int(np.argmax(ac[lo:len(c) // 2]))
+    st = (len(c) - per) // 2
+    unit = a[:, st:st + per]
+    sc = height / a.shape[0]
+    uw = max(4, int(round(per * sc)))
+    u = np.asarray(Image.fromarray((unit * 255).astype(np.uint8)).resize((uw, height), Image.LANCZOS)).astype(np.float32) / 255
+    reps = int(np.ceil(width / uw)) + 1
+    t = np.tile(u, (1, reps))
+    off = (t.shape[1] - width) // 2
+    return t[:, off:off + width]
+
+
+def kidana_ornaments(b):
+    """Swap the invented facade ornaments for the real KIDANA identity friezes (outline only, gold)."""
+    import cv2
+    A = np.asarray(b).astype(np.float32)
+    rgb, al = A[..., :3], A[..., 3]
+    H, W = al.shape
+    lum = rgb.mean(-1)
+    bh = cv2.morphologyEx(lum.astype(np.uint8), cv2.MORPH_BLACKHAT,
+                          cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))).astype(np.float32)
+    warm = (rgb[..., 0] - rgb[..., 2]) > 28
+    line = (bh > 14) & warm & (lum > 95) & (al > 250)
+    band = np.zeros_like(line)
+    for y0, y1 in [(.105, .23), (.31, .45), (.72, .85)]:
+        band[int(y0 * H):int(y1 * H), int(.09 * W):int(.915 * W)] = True
+    m = line & band
+    # keep the building's own long horizontal lines (string courses, lintels)
+    horiz = cv2.morphologyEx(m.astype(np.uint8), cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (31, 1))) > 0
+    m = m & ~ndimage.binary_dilation(horiz, iterations=1)
+    m = ndimage.binary_dilation(m, iterations=2)
+    rgbu = rgb.clip(0, 255).astype(np.uint8)
+    filled = cv2.inpaint(rgbu, m.astype(np.uint8) * 255, 5, cv2.INPAINT_TELEA).astype(np.float32)
+    rgb = np.where(m[..., None], filled, rgb)
+    gold = np.array([164, 120, 58], np.float32)
+    x0, x1 = int(.093 * W), int(.909 * W)
+    places = [("frieze", .08, .06), ("ystrip", .316, .04), ("ystrip", .725, .04)]
+    for name, yf, hf in places:
+        src = Image.open(BRAND / f"kidana_{name}.png").convert("L")
+        h = max(8, int(hf * H))
+        t = tile_strip(src, h, x1 - x0)
+        y = int(yf * H)
+        reg0 = rgb[y:y + h, x0:x1]
+        facade = (al[y:y + h, x0:x1] > 250) & (reg0.mean(-1) > 150) & ((reg0[..., 0] - reg0[..., 2]) > 10)
+        facade = ndimage.binary_erosion(facade, iterations=1)
+        a_ = np.clip(t * 1.2, 0, 1) * .85 * facade
+        reg = rgb[y:y + h, x0:x1]
+        rgb[y:y + h, x0:x1] = reg * (1 - a_[..., None]) + gold * a_[..., None]
+    print("  ornaments replaced with identity friezes")
+    return Image.fromarray(np.dstack([rgb.clip(0, 255), al]).astype(np.uint8), "RGBA")
+
+def kidana_logo(b, ornaments=False):
     """Remove the blank gold plaque and paint the real KIDANA icon straight on the facade."""
     if not LOGO or not LOGO.exists():
         return b
@@ -186,12 +247,48 @@ def kidana_logo(b):
     rgb2 = np.where(mask[..., None] > 0, filled, rgb).astype(np.float32)
     rgb2 += np.where(mask[..., None] > 0, np.random.default_rng(2).normal(0, 1.8, rgb2.shape), 0)
     out = Image.fromarray(np.dstack([rgb2.clip(0, 255), al]).astype(np.uint8), "RGBA")
+    if ornaments:
+        out = kidana_ornaments(out)
     logo = Image.open(LOGO).convert("RGBA")
-    icon = trim(logo.crop((2560, 0, logo.width, logo.height)), 0)
-    w = int(d * 0.95)
+    icon = logo.crop((2560, 0, logo.width, logo.height))
+    ia = np.asarray(icon).copy()
+    lab2, _ = ndimage.label(ia[..., 3] > 100)
+    sizes2 = ndimage.sum(ia[..., 3] > 100, lab2, range(1, lab2.max() + 1))
+    # full mark: the ك plus its outer ring arc (both parts of the official icon)
+    icon = trim(Image.fromarray(ia), 0)
+    w = int(d * 1.15)
     h = int(icon.height * w / icon.width)
-    icon = icon.resize((w, h), Image.LANCZOS).filter(ImageFilter.GaussianBlur(0.5))
-    out.alpha_composite(icon, (int(cx - w / 2), int(cy - h / 2)))
+    A = np.asarray(icon.resize((w, h), Image.LANCZOS))[..., 3].astype(np.float32) / 255
+    # raised, embossed gold mark: cast shadow + extruded side + lit top face + bevel highlight
+    pad = max(8, int(w * .08))
+    P = lambda arr: np.pad(arr, pad)
+    A = P(A)
+    H2, W2 = A.shape
+    depth = max(2, int(w * .035))
+    def shift(arr, dx, dy):
+        return np.roll(np.roll(arr, dy, 0), dx, 1)
+    shadow = ndimage.gaussian_filter(shift(A, int(depth * 1.6), int(depth * 2.2)), w * .02) * .55
+    side = np.zeros_like(A)
+    for i in range(1, depth + 1):
+        side = np.maximum(side, shift(A, i, i))
+    yy = np.linspace(0, 1, H2)[:, None] * np.ones((1, W2))
+    top_col = np.stack([236 - 48 * yy, 203 - 52 * yy, 140 - 50 * yy], -1)
+    hi = np.clip(A - shift(A, 2, 2), 0, 1)          # upper-left rim catches the light
+    lo = np.clip(A - shift(A, -2, -2), 0, 1)        # lower-right rim in shade
+    face = top_col + hi[..., None] * 45 - lo[..., None] * 40
+    side_col = np.array([128, 92, 46], np.float32)
+    shadow_col = np.array([92, 64, 36], np.float32)
+    layer = np.zeros((H2, W2, 4), np.float32)
+    def over(rgb, a):
+        a = a[..., None]
+        layer[..., :3] = rgb * a + layer[..., :3] * (1 - a)
+        layer[..., 3:] = a + layer[..., 3:] * (1 - a)
+    over(np.broadcast_to(shadow_col, A.shape + (3,)), shadow)
+    over(np.broadcast_to(side_col, A.shape + (3,)), side)
+    over(face, A)
+    rgb_ = np.where(layer[..., 3:] > 0, layer[..., :3] / np.maximum(layer[..., 3:], 1e-4), 0)
+    mark = Image.fromarray(np.dstack([rgb_.clip(0, 255), layer[..., 3] * 255]).astype(np.uint8), "RGBA")
+    out.alpha_composite(mark, (int(cx - W2 / 2), int(cy - H2 / 2)))
     print(f"  plaque removed, logo painted at ({cx:.0f},{cy:.0f}) d={d}")
     return out
 
@@ -321,7 +418,7 @@ for im, hx, name in [(stand, sx, "me"), (walk, wx, "me_walk")]:
     rec(name, save(c, name, 88))
 rec("uqu", save(uqu_logo(keep_largest(chroma(Image.open(RAW / "uqu.png"), "green")), "uqu"), "uqu", 86))
 kb = keep_largest(chroma(Image.open(RAW / "kidana.png"), "green"))
-rec("kidana", save(kidana_logo(kb), "kidana", 86))
+rec("kidana", save(kidana_logo(kb, ornaments=True), "kidana", 86))
 rec("wasl", save(wasl_logo(keep_largest(chroma(Image.open(RAW / "wasl.png"), "green"))), "wasl", 86))
 
 # sheets
