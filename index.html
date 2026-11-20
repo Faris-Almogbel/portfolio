@@ -7,7 +7,18 @@
 <meta name="description" content="Faris Almogbel, software engineering student in Makkah. A portfolio, told as a walk.">
 <meta property="og:title" content="Faris Almogbel · Portfolio">
 <meta property="og:description" content="My story so far, one step at a time.">
-<meta property="og:image" content="assets/og.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://faris-almogbel.github.io/portfolio/">
+<meta property="og:site_name" content="Faris Almogbel">
+<meta property="og:image" content="https://faris-almogbel.github.io/portfolio/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Faris standing in the Makkah desert next to a palm tree, the start of the portfolio walk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Faris Almogbel · Portfolio">
+<meta name="twitter:description" content="My story so far, one step at a time.">
+<meta name="twitter:image" content="https://faris-almogbel.github.io/portfolio/assets/og.jpg">
+<link rel="canonical" href="https://faris-almogbel.github.io/portfolio/">
 <meta name="theme-color" content="#e9d7b0">
 <link rel="icon" href="assets/ic_map.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,6 +55,7 @@ img{user-select:none;-webkit-user-drag:none}
 .frame .s{font-size:var(--fs3);opacity:.7}
 body.ar .frame .t,body.ar .frame .s{font-family:var(--ar)}
 .tool img{display:block;width:100%;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+.tool .nm.up{top:auto;bottom:100%;transform:translate(-50%,-8px)}
 .tool .nm{position:absolute;left:50%;top:100%;transform:translate(-50%,8px);white-space:nowrap;font-size:12px;font-weight:600;color:#ffe7b5;background:rgba(30,20,10,.72);padding:3px 8px;border-radius:999px}
 
 #me{position:absolute;z-index:4;bottom:4%;left:0;transform-origin:50% 100%;will-change:transform,left;pointer-events:none}
@@ -312,14 +324,14 @@ function build(){
           f.setAttribute("role","button");f.tabIndex=0;frameEls.push(f);
         });
       }else{
-        var tw=ww*.66,th=tw*ratio("table"),tl=ww/2-tw/2,tb=H*.05;
+        var tw=ww*(mob?.86:.8),th=ww*.66*ratio("table"),tl=ww/2-tw/2,tb=H*.05;
         var tb_=mk("img","",seg);tb_.src="assets/table.webp";tb_.style.cssText="position:absolute;left:"+tl+"px;bottom:"+tb+"px;width:"+tw+"px;height:"+th+"px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.5))";
         var vis=DATA.projects.filter(function(p){return !p.hidden}),n=vis.length,topY=tb+th*.93,oh=H*.15;
         vis.forEach(function(p,k){
           var t=mk("div","tool",seg),w=oh/ratio(p.img);
           t.dataset.i=DATA.projects.indexOf(p);
           t.style.cssText="left:"+(tl+tw*(k+1)/(n+1)-w/2)+"px;bottom:"+topY+"px;width:"+w+"px";
-          mk("img","",t).src="assets/"+p.img+".webp";var nm=mk("div","nm",t);nm.textContent=p.n;
+          mk("img","",t).src="assets/"+p.img+".webp";var nm=mk("div","nm"+(!mob&&n>2&&k==Math.floor(n/2)?" up":""),t);nm.textContent=p.n;
           t.setAttribute("role","button");t.tabIndex=0;t.setAttribute("aria-label",p.n);toolEls.push(t);
         });
         s.tblTop=topY;
