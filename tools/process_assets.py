@@ -26,7 +26,7 @@ def keyness(a, key):
     return np.minimum(r, b) - g  # magenta
 
 
-def chroma(img, key, fill=False, fill_max=0.0015):
+def chroma(img, key, fill=False, fill_max=0.0015, nogreen=False):
     """Key out a flat green/magenta background.
 
     Matte from 'key-ness', then every edge pixel takes the colour of the
@@ -75,7 +75,7 @@ def chroma(img, key, fill=False, fill_max=0.0015):
     # light global despill for any key tint that is left inside
     r, g, b = F[..., 0], F[..., 1], F[..., 2]
     if key == "green":
-        F[..., 1] = np.minimum(g, np.maximum(r, b) + 40)
+        F[..., 1] = np.minimum(g, np.maximum(r, b) + (0 if nogreen else 40))
     elif key == "blue":
         near = ndimage.binary_dilation(alpha < 0.9, iterations=4) | (b > g)
         F[..., 2] = np.where(near, np.minimum(b, g * 0.7), np.minimum(b, np.maximum(r, g) + 20))
@@ -155,7 +155,7 @@ def save(im, name, q=84, maxside=None):
 
 
 def kidana_logo(b):
-    """Find the blank gold plaque and stamp the real KIDANA icon on it."""
+    """Remove the blank gold plaque and paint the real KIDANA icon straight on the facade."""
     if not LOGO or not LOGO.exists():
         return b
     a = np.asarray(b).astype(np.float32)
@@ -167,30 +167,33 @@ def kidana_logo(b):
         print("  ! plaque not found")
         return b
     sizes = ndimage.sum(gold, lab, range(1, n + 1))
-    sl = ndimage.find_objects(lab)[int(np.argmax(sizes))]
+    k = int(np.argmax(sizes))
+    sl = ndimage.find_objects(lab)[k]
     y0, y1, x0, x1 = sl[0].start, sl[0].stop, sl[1].start, sl[1].stop
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     d = min(x1 - x0, y1 - y0)
+    # disc + its rim and cast shadow
+    disc = ndimage.binary_fill_holes(lab == k + 1)
+    grow = max(3, int(d * .07))
+    cover = ndimage.binary_dilation(disc, iterations=grow)
+    sh = np.roll(np.roll(cover, int(d * .05), 0), int(d * .05), 1)
+    cover = cover | sh
+    import cv2
+    rgb = a[..., :3].clip(0, 255).astype(np.uint8)
+    mask = (cover & (al > 0)).astype(np.uint8) * 255
+    filled = cv2.inpaint(rgb, mask, max(6, int(d * .12)), cv2.INPAINT_TELEA)
+    filled = cv2.GaussianBlur(filled, (0, 0), 1.2)
+    rgb2 = np.where(mask[..., None] > 0, filled, rgb).astype(np.float32)
+    rgb2 += np.where(mask[..., None] > 0, np.random.default_rng(2).normal(0, 1.8, rgb2.shape), 0)
+    out = Image.fromarray(np.dstack([rgb2.clip(0, 255), al]).astype(np.uint8), "RGBA")
     logo = Image.open(LOGO).convert("RGBA")
-    la = np.asarray(logo)[..., 3]
-    cols = np.where(la.max(0) > 0)[0]
-    icon = logo.crop((2560, 0, logo.width, logo.height))
-    icon = trim(icon, 0)
-    # recolour to warm white
-    ia = np.asarray(icon).copy()
-    ia[..., 0], ia[..., 1], ia[..., 2] = 255, 248, 236
-    icon = Image.fromarray(ia, "RGBA")
-    w = int(d * 0.66)
+    icon = trim(logo.crop((2560, 0, logo.width, logo.height)), 0)
+    w = int(d * 0.95)
     h = int(icon.height * w / icon.width)
-    icon = icon.resize((w, h), Image.LANCZOS).filter(ImageFilter.GaussianBlur(0.6))
-    # slight transparency so it reads painted-on
-    ia = np.asarray(icon).copy(); ia[..., 3] = (ia[..., 3] * 0.92).astype(np.uint8)
-    icon = Image.fromarray(ia, "RGBA")
-    out = b.copy()
+    icon = icon.resize((w, h), Image.LANCZOS).filter(ImageFilter.GaussianBlur(0.5))
     out.alpha_composite(icon, (int(cx - w / 2), int(cy - h / 2)))
-    print(f"  logo stamped on plaque at ({cx:.0f},{cy:.0f}) d={d}")
+    print(f"  plaque removed, logo painted at ({cx:.0f},{cy:.0f}) d={d}")
     return out
-
 
 def uqu_logo(b, label):
     """Replace the painted emblem on the gate's plaque with the real UQU icon."""
@@ -297,7 +300,25 @@ fl = tile_floor(Image.open(RAW / "floor.png"))
 rec("floor", save(fl, "floor", 80))
 
 # single cut-outs
-rec("me", save(keep_largest(chroma(Image.open(RAW / "character2.png"), "green")), "me", 88))
+def head_anchor(im):
+    al = np.asarray(im)[..., 3] > 128
+    ys, xs = np.where(al)
+    top = ys.min(); h = ys.max() - top
+    band = al[top:top + int(h * .16)]
+    hx = np.where(band)[1].mean()
+    return top, hx, ys.max()
+
+stand = keep_largest(chroma(Image.open(RAW / "me_stand.png"), "green", nogreen=True))
+walk = keep_largest(chroma(Image.open(RAW / "me_walk.png"), "green", nogreen=True))
+(st, sx, sb), (wt, wx, wb) = head_anchor(stand), head_anchor(walk)
+# same head position in both frames; shared canvas wide enough for the stride
+left = max(sx, wx) + 20
+right = max(stand.width - sx, walk.width - wx) + 20
+H = max(stand.height, walk.height) + 10
+for im, hx, name in [(stand, sx, "me"), (walk, wx, "me_walk")]:
+    c = Image.new("RGBA", (int(left + right), H), (0, 0, 0, 0))
+    c.alpha_composite(im, (int(left - hx), 0))
+    rec(name, save(c, name, 88))
 rec("uqu", save(uqu_logo(keep_largest(chroma(Image.open(RAW / "uqu.png"), "green")), "uqu"), "uqu", 86))
 kb = keep_largest(chroma(Image.open(RAW / "kidana.png"), "green"))
 rec("kidana", save(kidana_logo(kb), "kidana", 86))
