@@ -416,6 +416,26 @@ for im, hx, name in [(stand, sx, "me"), (walk, wx, "me_walk")]:
     c = Image.new("RGBA", (int(left + right), H), (0, 0, 0, 0))
     c.alpha_composite(im, (int(left - hx), 0))
     rec(name, save(c, name, 88))
+# extra poses (back view at the projects table, holding a certificate): same scale as the standing frame,
+# feet on the canvas floor; each keeps its own width
+poses = {}
+for name, src, hf in [("me_back", "me_back.jpg", .975), ("me_cert", "me_cert.jpg", 1.0)]:
+    im = keep_largest(chroma(Image.open(RAW / src), "green", nogreen=True))
+    sc = (stand.height * hf) / im.height
+    im = im.resize((max(1, round(im.width * sc)), max(1, round(im.height * sc))), Image.LANCZOS)
+    c = Image.new("RGBA", (im.width + 40, H), (0, 0, 0, 0))
+    c.alpha_composite(im, (20, H - im.height - (H - stand.height)))
+    a = np.asarray(c)[..., 3] > 128
+    ys, xs = np.where(a)
+    info = {"w": c.width, "h": c.height}
+    if name == "me_back":
+        # hands: the widest row in the middle of the figure (arms reaching out to the desk edge)
+        top, bot = ys.min(), ys.max()
+        widths = [(np.ptp(np.where(a[y])[0]) if a[y].any() else 0, y) for y in range(int(top + (bot - top) * .35), int(top + (bot - top) * .7))]
+        info["hand"] = round(1 - max(widths)[1] / c.height, 4)   # hands height above the canvas bottom, as a fraction
+    poses[name] = info
+    rec(name, save(c, name, 88))
+print("  poses", poses)
 rec("uqu", save(uqu_logo(keep_largest(chroma(Image.open(RAW / "uqu.png"), "green")), "uqu"), "uqu", 86))
 kb = keep_largest(chroma(Image.open(RAW / "kidana.png"), "green"))
 rec("kidana", save(kidana_logo(kb, ornaments=True), "kidana", 86))

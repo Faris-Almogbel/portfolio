@@ -76,6 +76,11 @@ body.ar .frame .t,body.ar .frame .s{font-family:var(--ar)}
 
 #me{position:absolute;z-index:4;bottom:4%;left:0;transform-origin:50% 100%;will-change:transform,left;pointer-events:none}
 #me img{transition:opacity .07s linear;position:absolute;left:0;bottom:0;display:block;height:100%;width:100%;transform-origin:50% 100%;transform:translateY(var(--bob,0)) rotate(var(--rot,0)) scaleX(var(--dir,1))}
+#me img.pose{width:auto;left:50%;opacity:0;transform:translateX(-50%) translateY(var(--bob,0));transition:opacity .28s ease}
+#me.posing #meimg,#me.posing #mewalk{opacity:0!important;transition:opacity .2s}
+#me.posing img.pose.on{opacity:1}
+.frame.taken{transition:transform .55s cubic-bezier(.4,.1,.2,1),opacity .25s .45s;pointer-events:none}
+.frame.back{transition:transform .5s cubic-bezier(.4,.1,.2,1),opacity .2s}
 #shadow{position:absolute;left:50%;bottom:-2%;width:70%;height:6%;background:radial-gradient(ellipse,rgba(40,20,0,.38),transparent 70%);transform:translateX(-50%)}
 
 #hero{position:absolute;z-index:5;left:6vw;top:18vh;max-width:min(560px,60vw);pointer-events:none}
@@ -112,6 +117,9 @@ body.ar .ic{font-family:var(--ar)}
 #cap .ln.meta::before{display:none}
 body.ar #cap .ln.meta{letter-spacing:0;font-size:.9em}
 #cap.bld{font-size:clamp(15px,1.25vw,18px);box-shadow:0 10px 30px -12px rgba(60,30,10,.35);border:1px solid var(--capbd,rgba(160,110,60,.18));padding:14px 20px 16px}
+#cap a.ln.lk{pointer-events:auto;display:inline-flex;align-self:flex-start;align-items:center;gap:.4em;margin:10px 0 2px;padding:6px 14px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:.9em;text-decoration:none;box-shadow:0 4px 12px rgba(194,65,107,.3);transition:transform .2s,box-shadow .2s}
+#cap a.ln.lk::before{display:none}
+#cap a.ln.lk:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(194,65,107,.4)}
 #cap .ln.hint{margin-top:8px;padding-top:8px;border-top:1px solid var(--capbd,rgba(160,110,60,.2));font-size:.88em;font-weight:600;padding-inline-start:1.5em}
 #cap .ln.hint::before{width:.7em;height:1em;top:calc(8px + .38em);border-radius:3px 3px 2px 2px;background:linear-gradient(#ffe3a0,#f0a640);box-shadow:0 0 8px rgba(255,180,70,.85)}
 #cap .lh{font-weight:700;margin-bottom:6px;opacity:0;animation:rise .6s cubic-bezier(.16,.84,.24,1) forwards}
@@ -192,7 +200,9 @@ body.ar #card.letter .d{font-family:var(--ar);font-style:normal;font-size:16.5px
 body.ar #card h3{font-family:var(--ar);padding-right:0;padding-left:40px}
 #card .m{margin-top:6px;font-size:13px;opacity:.65}
 #card .d{margin-top:16px;line-height:1.65;font-size:15px}
-#card ul{margin-top:14px;padding-inline-start:20px;line-height:1.8;font-size:15px}
+#card ul{margin-top:12px;padding-inline-start:20px;line-height:1.6;font-size:15px}
+#card li{margin:6px 0}
+#card li::marker{color:var(--accent)}
 #card .gal{display:grid;gap:10px;margin-top:16px}
 #card .gal img{width:100%;border-radius:10px;display:block}
 #card a.go{display:inline-block;margin-top:18px;padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600}
@@ -220,7 +230,7 @@ body.ar #card{direction:rtl}
   <div class="sky" id="sk2" style="opacity:0"></div>
   <div id="floor"></div>
   <div id="world"></div>
-  <div id="me"><div id="shadow"></div><img id="meimg" src="assets/me.webp" alt="Faris"><img id="mewalk" src="assets/me_walk.webp" alt="" style="opacity:0"></div>
+  <div id="me"><div id="shadow"></div><img id="meimg" src="assets/me.webp" alt="Faris"><img id="mewalk" src="assets/me_walk.webp" alt="" style="opacity:0"><img id="meback" class="pose" src="assets/me_back.webp" alt=""><img id="mecert" class="pose" src="assets/me_cert.webp" alt=""></div>
   <div id="hero"><h1 id="h1"></h1><p id="t1"></p><p id="t2"></p></div>
   <div id="head"></div>
   <div id="cap"></div>
@@ -251,10 +261,10 @@ var DATA={
  ui:{
   en:{map:"map",close:"close ×",route:"The route",hint:"drag, swipe or scroll to start walking →",here:"you are here",
       name:"FARIS",sur:"ALMOGBEL",t1:"Software engineering student. I build things people actually use.",t2:"my story so far, one step at a time.",
-      start:"The start",email:"Email",phone:"Phone",by:"Built by Faris Almogbel",lang:"ع",open:"Open link",lit:"Lit the way",mark:"Left a mark",team:"My team",tapl:"Tap a lantern: people who lit the way here",tapt:"Tap a lantern: my team on this project",li:"LinkedIn profile",loading:"loading the walk…"},
+      start:"The start",email:"Email",phone:"Phone",by:"Built by Faris Almogbel",lang:"ع",open:"Open link",lit:"Lit the way",mark:"Left a mark",team:"My team",wlink:"Wasl links ↗",tapl:"Tap a lantern: people who lit the way here",tapt:"Tap a lantern: my team on this project",li:"LinkedIn profile",loading:"loading the walk…"},
   ar:{map:"الخريطة",close:"إغلاق ×",route:"الخريطة",hint:"اسحب أو مرّر عشان تمشي معي →",here:"موقعك",
       name:"فارس",sur:"المقبل",t1:"طالب هندسة برمجيات، أبني أشياء ينتفع فيها الناس فعلاً.",t2:"قصتي لين الحين، خطوة بخطوة.",
-      start:"البداية",email:"البريد",phone:"الجوال",by:"تم البناء بواسطة فارس المقبل",lang:"EN",open:"افتح الرابط",lit:"نوّر لي الطريق",mark:"ترك فيني أثر",team:"فريقي",tapl:"اضغط على فانوس: ناس نوّروا لي الطريق هنا",tapt:"اضغط على فانوس: فريقي في المشروع",li:"حسابه في LinkedIn",loading:"…"}
+      start:"البداية",email:"البريد",phone:"الجوال",by:"تم البناء بواسطة فارس المقبل",lang:"EN",open:"افتح الرابط",lit:"نوّر لي الطريق",mark:"ترك فيني أثر",team:"فريقي",wlink:"روابط وصل ↗",tapl:"اضغط على فانوس: ناس نوّروا لي الطريق هنا",tapt:"اضغط على فانوس: فريقي في المشروع",li:"حسابه في LinkedIn",loading:"…"}
  },
  stops:[
   {id:"uqu",type:"building",img:"uqu",h:.5,sky:0,night:0,floor:"#fff1d6",map:"m_uqu",
@@ -267,14 +277,14 @@ var DATA={
    hl:{en:["Where I <i>work.</i>"],ar:["وين <em>أشتغل.</em>"]},
    hl2:{en:["What I <i>built.</i>"],ar:["وش <em>بنيت.</em>"]},
    ln:{en:[["KIDANA · Jul 2026 – present","IT Intern, Smart Solutions & Cities","Internal apps, dashboards and system integrations"],
-           ["Digital solutions with Microsoft Power Platform and web tech","A Hajj countdown app for the reception display"]],
+           ["Digital solutions with Microsoft Power Platform and web tech","Windows apps that support several departments"]],
        ar:[["كدانة · يوليو 2026 – الآن","متدرب تقنية معلومات، الحلول الذكية والمدن","تطبيقات داخلية ولوحات بيانات وربط أنظمة"],
-           ["حلول رقمية بـ Microsoft Power Platform وتقنيات الويب","تطبيق عدّاد تنازلي للحج لشاشة الاستقبال"]]}},
+           ["حلول رقمية بـ Microsoft Power Platform وتقنيات الويب","تطبيقات ويندوز تخدم عدة إدارات"]]}},
   {id:"wasl",type:"building",img:"wasl",h:.46,sky:1,night:.35,floor:"#f2c39a",map:"m_wasl",
-   name:{en:"Wasl",ar:"وصل"},link:"https://linktr.ee/WaslUqu",showLink:false,
+   name:{en:"Wasl",ar:"وصل"},link:"https://linktr.ee/WaslUqu",showLink:true,
    hl:{en:["What I <i>led.</i>"],ar:["المشروع اللي <em>قدته.</em>"]},
-   ln:{en:[["Graduation project · Aug 2025 – Jun 2026","A platform for student transportation and accommodation","Led it end to end: requirements, SRS, architecture, UML, frontend","Flutter · Spring Boot · PostgreSQL · Figma"]],
-       ar:[["مشروع التخرج · أغسطس 2025 – يونيو 2026","منصة لنقل وسكن طلاب الجامعة","قدته من البداية للنهاية: المتطلبات، SRS، المعمارية، UML، والواجهة","Flutter · Spring Boot · PostgreSQL · Figma"]]}},
+   ln:{en:[["Graduation project · Aug 2025 – Jun 2026","A platform for student transportation and accommodation","Led it end to end: SRS, database, backend and frontend","Figma · Flutter · Spring Boot · PostgreSQL"]],
+       ar:[["مشروع التخرج · أغسطس 2025 – يونيو 2026","منصة لنقل وسكن طلاب الجامعة","قدته من البداية للنهاية: SRS، قاعدة البيانات، الباك إند، والفرونت إند","Figma · Flutter · Spring Boot · PostgreSQL"]]}},
   {id:"certs",type:"wall",sky:2,night:1,floor:"#4a4470",map:"m_gallery",
    name:{en:"Certificates",ar:"الشهادات"},
    hl:{en:["Where I kept <i>learning.</i>"],ar:["وين كمّلت <em>أتعلم.</em>"]},
@@ -338,17 +348,17 @@ var DATA={
    m:{en:"Oracle · April 2026",ar:"أوراكل · أبريل 2026"}}
  ],
  projects:[
-  {img:"p_securefile",n:"Secure File Management",m:{en:"Power Apps · Power Automate · Power BI",ar:"Power Apps · Power Automate · Power BI"},
-   d:{en:"An internal file-sharing solution that generates unique links and QR codes so files reach only the intended recipients. I built the QR code generation with custom code and a Power BI dashboard that tracks sharing activity across departments, internal and external.",
-      ar:"حل داخلي لمشاركة الملفات يولّد روابط ورموز QR خاصة عشان الملف يوصل للشخص المقصود بس. بنيت توليد رموز QR بكود مخصص، ولوحة Power BI تتابع نشاط المشاركة بين الإدارات داخلياً وخارجياً."},
+  {img:"p_securefile",n:"Secure File Management",m:{"en": "Power Apps · Power Automate · Power BI", "ar": "Power Apps · Power Automate · Power BI"},
+   d:{"en": "An internal solution for sharing files securely, inside KIDANA and with outside parties.", "ar": "حل داخلي لمشاركة الملفات بأمان، داخل كدانة ومع الجهات الخارجية."},
+   f:{"en": ["Simple, guided screens that make sharing a file quick and easy for everyone", "A unique link and QR code for every share, so the file reaches only the right person", "A full history of each user's shares in one place", "Reminders before a share expires, and a notice once it has", "A Power BI dashboard that tracks sharing across departments"], "ar": ["واجهات بسيطة توجّه المستخدم وتخلي مشاركة الملف سهلة وسريعة", "رابط ورمز QR خاص لكل مشاركة، عشان الملف يوصل للشخص المقصود بس", "سجل كامل لمشاركات كل مستخدم في مكان واحد", "تذكيرات قبل انتهاء المشاركة، وإشعار إذا انتهت", "لوحة Power BI تتابع المشاركات بين الإدارات"]},
    images:[],link:""},
-  {img:"p_washroom",n:"Smart Washroom Dashboard",m:{en:"Next.js · PHP · JavaScript · Webhooks · IoT sensors",ar:"Next.js · PHP · JavaScript · Webhooks · حساسات IoT"},
-   d:{en:"An IoT dashboard for smart washroom sensors. I wrote the backend logic that validates, classifies and stores sensor data, and built responsive dashboard screens with real-time updates through webhooks.",
-      ar:"لوحة متابعة لحساسات دورات المياه الذكية. كتبت منطق الباك إند اللي يتحقق من بيانات الحساسات ويصنّفها ويخزّنها، وبنيت واجهات متجاوبة تتحدث لحظياً عن طريق Webhooks."},
+  {img:"p_washroom",n:"Smart Washroom Dashboard",m:{"en": "Next.js · React · TypeScript · PostgreSQL (Supabase) · three.js · LoRaWAN IoT", "ar": "Next.js · React · TypeScript · PostgreSQL (Supabase) · three.js · LoRaWAN IoT"},
+   d:{"en": "A real-time control-room platform for the washrooms across the Holy Sites, fed by live IoT sensors.", "ar": "منصة تشغيل لحظية لدورات المياه في المشاعر المقدسة، تتغذى من حساسات IoT مباشرة."},
+   f:{"en": ["Live occupancy for every cabin, air quality per section and a people counter at the entrance", "A 3D digital twin of the Holy Sites, from the whole site down to a single cabin", "Integrated statistics with full history: hourly and daily trends for any date range, with exports", "Alerts, incidents and a health view for every device", "Arabic and English, dark and light, in the KIDANA identity"], "ar": ["إشغال مباشر لكل كابينة، وجودة الهواء لكل قسم، وعدّاد أشخاص عند المدخل", "توأم رقمي ثلاثي الأبعاد للمشاعر، من الموقع كامل لين الكابينة الوحدة", "إحصائيات متكاملة بسجل كامل: اتجاهات بالساعة واليوم لأي فترة، مع التصدير", "تنبيهات وبلاغات، ومتابعة لحالة كل جهاز", "عربي وإنقليزي، فاتح وداكن، بهوية كدانة"]},
    images:[],link:""},
-  {img:"p_meeting",n:"Meeting Countdown",m:{en:"Windows app · WPF · C# / .NET · Outlook calendar",ar:"تطبيق ويندوز · WPF · C# / .NET · تقويم Outlook"},
-   d:{en:"A native Windows app that reads the meetings from your Outlook calendar and shows a live countdown for the meeting in progress: green, then amber at 15 minutes and red at 5. It lists the next meetings, hides the titles of private ones, and has a full-screen room-display mode for meeting rooms.",
-      ar:"تطبيق ويندوز يسحب الاجتماعات من تقويم Outlook حقك ويعرض عدّاد تنازلي مباشر للاجتماع الحالي: أخضر، ثم برتقالي إذا بقى 15 دقيقة، وأحمر إذا بقى 5. يعرض الاجتماعات الجاية، ويخفي عناوين الاجتماعات الخاصة، وفيه وضع شاشة كاملة لقاعات الاجتماعات."},
+  {img:"p_meeting",n:"Meeting Countdown",m:{"en": "Windows app · WPF · C# / .NET · Outlook calendar", "ar": "تطبيق ويندوز · WPF · C# / .NET · تقويم Outlook"},
+   d:{"en": "A native Windows app that turns your Outlook calendar into a live meeting countdown.", "ar": "تطبيق ويندوز يحوّل تقويم Outlook حقك لعدّاد تنازلي مباشر للاجتماعات."},
+   f:{"en": ["Reads your meetings straight from the Outlook calendar", "A live countdown for the current meeting: green, amber at 15 minutes, red at 5", "Lists the next meetings and hides the titles of private ones", "A full-screen room-display mode for meeting rooms"], "ar": ["يسحب اجتماعاتك مباشرة من تقويم Outlook", "عدّاد مباشر للاجتماع الحالي: أخضر، ثم برتقالي إذا بقى 15 دقيقة، وأحمر إذا بقى 5", "يعرض الاجتماعات الجاية، ويخفي عناوين الاجتماعات الخاصة", "وضع شاشة كاملة لقاعات الاجتماعات"]},
    images:[],link:""},
   {img:"m_wasl",n:"Wasl",hidden:true,m:{en:"Flutter · Spring Boot · PostgreSQL",ar:"Flutter · Spring Boot · PostgreSQL"},
    d:{en:"Graduation project: a platform for university students' transportation and accommodation.",ar:"مشروع التخرج: منصة لنقل وسكن طلاب الجامعة."},
@@ -356,12 +366,12 @@ var DATA={
  ],
  icons:{"python": {"t": "Python", "c": "#3776AB", "p": "M11.858 0c-.978.005-1.913.088-2.736.234C6.7.662 6.26 1.558 6.26 3.21v2.182h5.725v.727H4.111c-1.664 0-3.121 1-3.577 2.903-.526 2.181-.549 3.542 0 5.82.407 1.694 1.379 2.902 3.043 2.902h1.969v-2.616c0-1.89 1.635-3.557 3.576-3.557h5.72c1.591 0 2.862-1.31 2.862-2.91v-5.45c0-1.553-1.309-2.718-2.863-2.977A18 18 0 0 0 11.858 0M8.762 1.755c.591 0 1.074.491 1.074 1.095 0 .601-.483 1.087-1.074 1.087A1.08 1.08 0 0 1 7.688 2.85c0-.604.48-1.095 1.074-1.095m9.656 4.364v2.543c0 1.971-1.671 3.63-3.577 3.63H9.122c-1.566 0-2.862 1.34-2.862 2.91v5.452c0 1.551 1.349 2.464 2.862 2.91 1.813.532 3.55.628 5.72 0 1.44-.418 2.862-1.258 2.862-2.91V18.47h-5.719v-.727h8.582c1.664 0 2.284-1.16 2.862-2.903.598-1.793.573-3.518 0-5.819-.41-1.656-1.196-2.903-2.862-2.903zm-3.216 13.807a1.08 1.08 0 0 1 1.074 1.088c0 .604-.48 1.094-1.074 1.094-.592 0-1.075-.49-1.075-1.094 0-.601.483-1.088 1.075-1.088"}, "java": {"t": "Java", "c": "#E76F00", "p": "M11.915 0 11.7.215C9.515 2.4 7.47 6.39 6.046 10.483c-1.064 1.024-3.633 2.81-3.711 3.551-.093.87 1.746 2.611 1.55 3.235-.198.625-1.304 1.408-1.014 1.939.1.188.823.011 1.277-.491a13.389 13.389 0 0 0-.017 2.14c.076.906.27 1.668.643 2.232.372.563.956.911 1.667.911.397 0 .727-.114 1.024-.264.298-.149.571-.33.91-.5.68-.34 1.634-.666 3.53-.604 1.903.062 2.872.39 3.559.704.687.314 1.15.664 1.925.664.767 0 1.395-.336 1.807-.9.412-.563.631-1.33.72-2.24.06-.623.055-1.32 0-2.066.454.45 1.117.604 1.213.424.29-.53-.816-1.314-1.013-1.937-.198-.624 1.642-2.366 1.549-3.236-.08-.748-2.707-2.568-3.748-3.586C16.428 6.374 14.308 2.394 12.13.215zm.175 6.038a2.95 2.95 0 0 1 2.943 2.942 2.95 2.95 0 0 1-2.943 2.943A2.95 2.95 0 0 1 9.148 8.98a2.95 2.95 0 0 1 2.942-2.942zM8.685 7.983a3.515 3.515 0 0 0-.145.997c0 1.951 1.6 3.55 3.55 3.55 1.95 0 3.55-1.598 3.55-3.55 0-.329-.046-.648-.132-.951.334.095.64.208.915.336a42.699 42.699 0 0 1 2.042 5.829c.678 2.545 1.01 4.92.846 6.607-.082.844-.29 1.51-.606 1.94-.315.431-.713.651-1.315.651-.593 0-.932-.27-1.673-.61-.741-.338-1.825-.694-3.792-.758-1.974-.064-3.073.293-3.821.669-.375.188-.659.373-.911.5s-.466.2-.752.2c-.53 0-.876-.209-1.16-.64-.285-.43-.474-1.101-.545-1.948-.141-1.693.176-4.069.823-6.614a43.155 43.155 0 0 1 1.934-5.783c.348-.167.749-.31 1.192-.425zm-3.382 4.362a.216.216 0 0 1 .13.031c-.166.56-.323 1.116-.463 1.665a33.849 33.849 0 0 0-.547 2.555 3.9 3.9 0 0 0-.2-.39c-.58-1.012-.914-1.642-1.16-2.08.315-.24 1.679-1.755 2.24-1.781zm13.394.01c.562.027 1.926 1.543 2.24 1.783-.246.438-.58 1.068-1.16 2.08a4.428 4.428 0 0 0-.163.309 32.354 32.354 0 0 0-.562-2.49 40.579 40.579 0 0 0-.482-1.652.216.216 0 0 1 .127-.03z"}, "javascript": {"t": "JavaScript", "c": "#F7DF1E", "p": "M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"}, "html": {"t": "HTML", "c": "#E34F26", "p": "M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"}, "css": {"t": "CSS", "c": "#663399", "p": "M0 0v20.16A3.84 3.84 0 0 0 3.84 24h16.32A3.84 3.84 0 0 0 24 20.16V3.84A3.84 3.84 0 0 0 20.16 0Zm14.256 13.08c1.56 0 2.28 1.08 2.304 2.64h-1.608c.024-.288-.048-.6-.144-.84-.096-.192-.288-.264-.552-.264-.456 0-.696.264-.696.84-.024.576.288.888.768 1.08.72.288 1.608.744 1.92 1.296q.432.648.432 1.656c0 1.608-.912 2.592-2.496 2.592-1.656 0-2.4-1.032-2.424-2.688h1.68c0 .792.264 1.176.792 1.176.264 0 .456-.072.552-.24.192-.312.24-1.176-.048-1.512-.312-.408-.912-.6-1.32-.816q-.828-.396-1.224-.936c-.24-.36-.36-.888-.36-1.536 0-1.44.936-2.472 2.424-2.448m5.4 0c1.584 0 2.304 1.08 2.328 2.64h-1.608c0-.288-.048-.6-.168-.84-.096-.192-.264-.264-.528-.264-.48 0-.72.264-.72.84s.288.888.792 1.08c.696.288 1.608.744 1.92 1.296.264.432.408.984.408 1.656.024 1.608-.888 2.592-2.472 2.592-1.68 0-2.424-1.056-2.448-2.688h1.68c0 .744.264 1.176.792 1.176.264 0 .456-.072.552-.24.216-.312.264-1.176-.048-1.512-.288-.408-.888-.6-1.32-.816-.552-.264-.96-.576-1.2-.936s-.36-.888-.36-1.536c-.024-1.44.912-2.472 2.4-2.448m-11.031.018c.711-.006 1.419.198 1.839.63.432.432.672 1.128.648 1.992H9.336c.024-.456-.096-.792-.432-.96-.312-.144-.768-.048-.888.24-.12.264-.192.576-.168.864v3.504c0 .744.264 1.128.768 1.128a.65.65 0 0 0 .552-.264c.168-.24.192-.552.168-.84h1.776c.096 1.632-.984 2.712-2.568 2.688-1.536 0-2.496-.864-2.472-2.472v-4.032c0-.816.24-1.44.696-1.848.432-.408 1.146-.624 1.857-.63"}, "php": {"t": "PHP", "c": "#777BB4", "p": "M7.01 10.207h-.944l-.515 2.648h.838c.556 0 .97-.105 1.242-.314.272-.21.455-.559.55-1.049.092-.47.05-.802-.124-.995-.175-.193-.523-.29-1.047-.29zM12 5.688C5.373 5.688 0 8.514 0 12s5.373 6.313 12 6.313S24 15.486 24 12c0-3.486-5.373-6.312-12-6.312zm-3.26 7.451c-.261.25-.575.438-.917.551-.336.108-.765.164-1.285.164H5.357l-.327 1.681H3.652l1.23-6.326h2.65c.797 0 1.378.209 1.744.628.366.418.476 1.002.33 1.752a2.836 2.836 0 0 1-.305.847c-.143.255-.33.49-.561.703zm4.024.715l.543-2.799c.063-.318.039-.536-.068-.651-.107-.116-.336-.174-.687-.174H11.46l-.704 3.625H9.388l1.23-6.327h1.367l-.327 1.682h1.218c.767 0 1.295.134 1.586.401s.378.7.263 1.299l-.572 2.944h-1.389zm7.597-2.265a2.782 2.782 0 0 1-.305.847c-.143.255-.33.49-.561.703a2.44 2.44 0 0 1-.917.551c-.336.108-.765.164-1.286.164h-1.18l-.327 1.682h-1.378l1.23-6.326h2.649c.797 0 1.378.209 1.744.628.366.417.477 1.001.331 1.751zM17.766 10.207h-.943l-.516 2.648h.838c.557 0 .971-.105 1.242-.314.272-.21.455-.559.551-1.049.092-.47.049-.802-.125-.995s-.524-.29-1.047-.29z"}, "flutter": {"t": "Flutter", "c": "#02569B", "p": "M14.314 0L2.3 12 6 15.7 21.684.013h-7.357zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"}, "springboot": {"t": "Spring Boot", "c": "#6DB33F", "p": "m23.693 10.7058-4.73-8.1844c-.4094-.7106-1.4166-1.2942-2.2402-1.2942H7.2725c-.819 0-1.8308.5836-2.2402 1.2942L.307 10.7058c-.4095.7106-.4095 1.873 0 2.5837l4.7252 8.189c.4094.7107 1.4166 1.2943 2.2402 1.2943h9.455c.819 0 1.826-.5836 2.2402-1.2942l4.7252-8.189c.4095-.7107.4095-1.8732 0-2.5838zM10.9763 5.7547c0-.5365.4377-.9742.9742-.9742s.9742.4377.9742.9742v5.8217c0 .5366-.4377.9742-.9742.9742s-.9742-.4376-.9742-.9742zm.9742 12.4294c-3.6427 0-6.6077-2.965-6.6077-6.6077.0047-2.0896.993-4.0521 2.6685-5.304a.8657.8657 0 0 1 1.2142.1788.8657.8657 0 0 1-.1788 1.2143c-2.1602 1.6048-2.612 4.6592-1.0072 6.8194 1.6049 2.1603 4.6593 2.612 6.8195 1.0072 1.2378-.9177 1.9673-2.372 1.9673-3.9157a4.8972 4.8972 0 0 0-1.9861-3.925c-.386-.2824-.466-.8284-.1836-1.2143.2824-.386.8283-.466 1.2143-.1835 1.6895 1.2471 2.6826 3.2238 2.6873 5.3228 0 3.6474-2.965 6.6077-6.6077 6.6077z"}, "nextjs": {"t": "Next.js", "c": "#000000", "p": "M18.665 21.978C16.758 23.255 14.465 24 12 24 5.377 24 0 18.623 0 12S5.377 0 12 0s12 5.377 12 12c0 3.583-1.574 6.801-4.067 9.001L9.219 7.2H7.2v9.596h1.615V9.251l9.85 12.727Zm-3.332-8.533 1.6 2.061V7.2h-1.6v6.245Z"}, "postgresql": {"t": "PostgreSQL", "c": "#4169E1", "p": "M23.5594 14.7228a.5269.5269 0 0 0-.0563-.1191c-.139-.2632-.4768-.3418-1.0074-.2321-1.6533.3411-2.2935.1312-2.5256-.0191 1.342-2.0482 2.445-4.522 3.0411-6.8297.2714-1.0507.7982-3.5237.1222-4.7316a1.5641 1.5641 0 0 0-.1509-.235C21.6931.9086 19.8007.0248 17.5099.0005c-1.4947-.0158-2.7705.3461-3.1161.4794a9.449 9.449 0 0 0-.5159-.0816 8.044 8.044 0 0 0-1.3114-.1278c-1.1822-.0184-2.2038.2642-3.0498.8406-.8573-.3211-4.7888-1.645-7.2219.0788C.9359 2.1526.3086 3.8733.4302 6.3043c.0409.818.5069 3.334 1.2423 5.7436.4598 1.5065.9387 2.7019 1.4334 3.582.553.9942 1.1259 1.5933 1.7143 1.7895.4474.1491 1.1327.1441 1.8581-.7279.8012-.9635 1.5903-1.8258 1.9446-2.2069.4351.2355.9064.3625 1.39.3772a.0569.0569 0 0 0 .0004.0041 11.0312 11.0312 0 0 0-.2472.3054c-.3389.4302-.4094.5197-1.5002.7443-.3102.064-1.1344.2339-1.1464.8115-.0025.1224.0329.2309.0919.3268.2269.4231.9216.6097 1.015.6331 1.3345.3335 2.5044.092 3.3714-.6787-.017 2.231.0775 4.4174.3454 5.0874.2212.5529.7618 1.9045 2.4692 1.9043.2505 0 .5263-.0291.8296-.0941 1.7819-.3821 2.5557-1.1696 2.855-2.9059.1503-.8707.4016-2.8753.5388-4.1012.0169-.0703.0357-.1207.057-.1362.0007-.0005.0697-.0471.4272.0307a.3673.3673 0 0 0 .0443.0068l.2539.0223.0149.001c.8468.0384 1.9114-.1426 2.5312-.4308.6438-.2988 1.8057-1.0323 1.5951-1.6698zM2.371 11.8765c-.7435-2.4358-1.1779-4.8851-1.2123-5.5719-.1086-2.1714.4171-3.6829 1.5623-4.4927 1.8367-1.2986 4.8398-.5408 6.108-.13-.0032.0032-.0066.0061-.0098.0094-2.0238 2.044-1.9758 5.536-1.9708 5.7495-.0002.0823.0066.1989.0162.3593.0348.5873.0996 1.6804-.0735 2.9184-.1609 1.1504.1937 2.2764.9728 3.0892.0806.0841.1648.1631.2518.2374-.3468.3714-1.1004 1.1926-1.9025 2.1576-.5677.6825-.9597.5517-1.0886.5087-.3919-.1307-.813-.5871-1.2381-1.3223-.4796-.839-.9635-2.0317-1.4155-3.5126zm6.0072 5.0871c-.1711-.0428-.3271-.1132-.4322-.1772.0889-.0394.2374-.0902.4833-.1409 1.2833-.2641 1.4815-.4506 1.9143-1.0002.0992-.126.2116-.2687.3673-.4426a.3549.3549 0 0 0 .0737-.1298c.1708-.1513.2724-.1099.4369-.0417.156.0646.3078.26.3695.4752.0291.1016.0619.2945-.0452.4444-.9043 1.2658-2.2216 1.2494-3.1676 1.0128zm2.094-3.988-.0525.141c-.133.3566-.2567.6881-.3334 1.003-.6674-.0021-1.3168-.2872-1.8105-.8024-.6279-.6551-.9131-1.5664-.7825-2.5004.1828-1.3079.1153-2.4468.079-3.0586-.005-.0857-.0095-.1607-.0122-.2199.2957-.2621 1.6659-.9962 2.6429-.7724.4459.1022.7176.4057.8305.928.5846 2.7038.0774 3.8307-.3302 4.7363-.084.1866-.1633.3629-.2311.5454zm7.3637 4.5725c-.0169.1768-.0358.376-.0618.5959l-.146.4383a.3547.3547 0 0 0-.0182.1077c-.0059.4747-.054.6489-.115.8693-.0634.2292-.1353.4891-.1794 1.0575-.11 1.4143-.8782 2.2267-2.4172 2.5565-1.5155.3251-1.7843-.4968-2.0212-1.2217a6.5824 6.5824 0 0 0-.0769-.2266c-.2154-.5858-.1911-1.4119-.1574-2.5551.0165-.5612-.0249-1.9013-.3302-2.6462.0044-.2932.0106-.5909.019-.8918a.3529.3529 0 0 0-.0153-.1126 1.4927 1.4927 0 0 0-.0439-.208c-.1226-.4283-.4213-.7866-.7797-.9351-.1424-.059-.4038-.1672-.7178-.0869.067-.276.1831-.5875.309-.9249l.0529-.142c.0595-.16.134-.3257.213-.5012.4265-.9476 1.0106-2.2453.3766-5.1772-.2374-1.0981-1.0304-1.6343-2.2324-1.5098-.7207.0746-1.3799.3654-1.7088.5321a5.6716 5.6716 0 0 0-.1958.1041c.0918-1.1064.4386-3.1741 1.7357-4.4823a4.0306 4.0306 0 0 1 .3033-.276.3532.3532 0 0 0 .1447-.0644c.7524-.5706 1.6945-.8506 2.802-.8325.4091.0067.8017.0339 1.1742.081 1.939.3544 3.2439 1.4468 4.0359 2.3827.8143.9623 1.2552 1.9315 1.4312 2.4543-1.3232-.1346-2.2234.1268-2.6797.779-.9926 1.4189.543 4.1729 1.2811 5.4964.1353.2426.2522.4522.2889.5413.2403.5825.5515.9713.7787 1.2552.0696.087.1372.1714.1885.245-.4008.1155-1.1208.3825-1.0552 1.717-.0123.1563-.0423.4469-.0834.8148-.0461.2077-.0702.4603-.0994.7662zm.8905-1.6211c-.0405-.8316.2691-.9185.5967-1.0105a2.8566 2.8566 0 0 0 .135-.0406 1.202 1.202 0 0 0 .1342.103c.5703.3765 1.5823.4213 3.0068.1344-.2016.1769-.5189.3994-.9533.6011-.4098.1903-1.0957.333-1.7473.3636-.7197.0336-1.0859-.0807-1.1721-.151zm.5695-9.2712c-.0059.3508-.0542.6692-.1054 1.0017-.055.3576-.112.7274-.1264 1.1762-.0142.4368.0404.8909.0932 1.3301.1066.887.216 1.8003-.2075 2.7014a3.5272 3.5272 0 0 1-.1876-.3856c-.0527-.1276-.1669-.3326-.3251-.6162-.6156-1.1041-2.0574-3.6896-1.3193-4.7446.3795-.5427 1.3408-.5661 2.1781-.463zm.2284 7.0137a12.3762 12.3762 0 0 0-.0853-.1074l-.0355-.0444c.7262-1.1995.5842-2.3862.4578-3.4385-.0519-.4318-.1009-.8396-.0885-1.2226.0129-.4061.0666-.7543.1185-1.0911.0639-.415.1288-.8443.1109-1.3505.0134-.0531.0188-.1158.0118-.1902-.0457-.4855-.5999-1.938-1.7294-3.253-.6076-.7073-1.4896-1.4972-2.6889-2.0395.5251-.1066 1.2328-.2035 2.0244-.1859 2.0515.0456 3.6746.8135 4.8242 2.2824a.908.908 0 0 1 .0667.1002c.7231 1.3556-.2762 6.2751-2.9867 10.5405zm-8.8166-6.1162c-.025.1794-.3089.4225-.6211.4225a.5821.5821 0 0 1-.0809-.0056c-.1873-.026-.3765-.144-.5059-.3156-.0458-.0605-.1203-.178-.1055-.2844.0055-.0401.0261-.0985.0925-.1488.1182-.0894.3518-.1226.6096-.0867.3163.0441.6426.1938.6113.4186zm7.9305-.4114c.0111.0792-.049.201-.1531.3102-.0683.0717-.212.1961-.4079.2232a.5456.5456 0 0 1-.075.0052c-.2935 0-.5414-.2344-.5607-.3717-.024-.1765.2641-.3106.5611-.352.297-.0414.6111.0088.6356.1851z"}, "figma": {"t": "Figma", "c": "#F24E1E", "p": "M15.852 8.981h-4.588V0h4.588c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.491-4.49 4.491zM12.735 7.51h3.117c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-3.117V7.51zm0 1.471H8.148c-2.476 0-4.49-2.014-4.49-4.49S5.672 0 8.148 0h4.588v8.981zm-4.587-7.51c-1.665 0-3.019 1.355-3.019 3.019s1.354 3.02 3.019 3.02h3.117V1.471H8.148zm4.587 15.019H8.148c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h4.588v8.98zM8.148 8.981c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h3.117V8.981H8.148zM8.172 24c-2.489 0-4.515-2.014-4.515-4.49s2.014-4.49 4.49-4.49h4.588v4.441c0 2.503-2.047 4.539-4.563 4.539zm-.024-7.51a3.023 3.023 0 0 0-3.019 3.019c0 1.665 1.365 3.019 3.044 3.019 1.705 0 3.093-1.376 3.093-3.068v-2.97H8.148zm7.704 0h-.098c-2.476 0-4.49-2.014-4.49-4.49s2.014-4.49 4.49-4.49h.098c2.476 0 4.49 2.014 4.49 4.49s-2.014 4.49-4.49 4.49zm-.097-7.509c-1.665 0-3.019 1.355-3.019 3.019s1.355 3.019 3.019 3.019h.098c1.665 0 3.019-1.355 3.019-3.019s-1.355-3.019-3.019-3.019h-.098z"}, "jira": {"t": "Jira", "c": "#0052CC", "p": "M11.571 11.513H0a5.218 5.218 0 0 0 5.232 5.215h2.13v2.057A5.215 5.215 0 0 0 12.575 24V12.518a1.005 1.005 0 0 0-1.005-1.005zm5.723-5.756H5.736a5.215 5.215 0 0 0 5.215 5.214h2.129v2.058a5.218 5.218 0 0 0 5.215 5.214V6.758a1.001 1.001 0 0 0-1.001-1.001zM23.013 0H11.455a5.215 5.215 0 0 0 5.215 5.215h2.129v2.057A5.215 5.215 0 0 0 24 12.483V1.005A1.001 1.001 0 0 0 23.013 0Z"}, "git": {"t": "Git", "c": "#F03C2E", "p": "M13.09 23.549a1.54 1.54 0 0 1-2.18 0L.451 13.089a1.54 1.54 0 0 1 0-2.179l7.191-7.19 2.733 2.733a1.85 1.85 0 0 0 .964 2.326v6.66a1.849 1.849 0 1 0 1.54 0V8.957l2.508 2.508a1.85 1.85 0 1 0 1.09-1.09l-2.634-2.634a1.85 1.85 0 0 0-2.378-2.377L8.73 2.63 10.91.451a1.54 1.54 0 0 1 2.179 0l10.459 10.46a1.54 1.54 0 0 1 0 2.179z"}, "uml": {"t": "UML", "c": "#FABD14", "p": "M10.768 0 7.182 1.604s6.126 2.72 6.852 3.055c.72.335 1.744.947.565 1.629-1.18.682-2.423.477-3.259.09-.835-.384-7.012-3.257-7.012-3.257L.666 4.777s6.4 2.935 7.4 3.417c1.003.482 4.753 1.784 8.48.002 3.727-1.781 3.261-2.577 3.268-2.724.006-.148-.036-.933-.632-1.467-.599-.534-2.378-1.375-3.127-1.73C15.305 1.916 10.77 0 10.77 0ZM.411 5.299v13.215l2.904 1.402v-7.963l1.585 8.6 2.58 1.243 1.66-7.154v7.826l2.916 1.38V10.643L7.629 8.628l-1.403 6.296-1.412-7.598Zm16.76 3.115-4.624 2.315L12.559 24l11.03-5.225-.025-3.613-6.393 2.92Z"}, "sql": {"t": "SQL", "c": "#00758F", "p": "M12 2C7.6 2 4 3.3 4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5c0-1.7-3.6-3-8-3zm0 2c3.6 0 6 .9 6 1s-2.4 1-6 1-6-.9-6-1 2.4-1 6-1zM6 7.3C7.6 7.8 9.7 8 12 8s4.4-.2 6-.7V10c0 .3-2.4 1-6 1s-6-.7-6-1V7.3zm0 5C7.6 12.8 9.7 13 12 13s4.4-.2 6-.7V15c0 .3-2.4 1-6 1s-6-.7-6-1v-2.7zM6 17.3c1.6.5 3.7.7 6 .7s4.4-.2 6-.7V19c0 .3-2.4 1-6 1s-6-.7-6-1v-1.7z"}, "dataverse": {"t": "Dataverse", "c": "#088142", "p": "M12 2C7.6 2 4 3.3 4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5c0-1.7-3.6-3-8-3zm0 2c3.6 0 6 .9 6 1s-2.4 1-6 1-6-.9-6-1 2.4-1 6-1zM6 7.3C7.6 7.8 9.7 8 12 8s4.4-.2 6-.7V10c0 .3-2.4 1-6 1s-6-.7-6-1V7.3zm0 5C7.6 12.8 9.7 13 12 13s4.4-.2 6-.7V15c0 .3-2.4 1-6 1s-6-.7-6-1v-2.7zM6 17.3c1.6.5 3.7.7 6 .7s4.4-.2 6-.7V19c0 .3-2.4 1-6 1s-6-.7-6-1v-1.7z"}, "powerbi": {"t": "Power BI", "c": "#E8B400", "p": "M3 13h4.5v8H3zM9.75 8h4.5v13h-4.5zM16.5 3H21v18h-4.5z"}, "powerapps": {"t": "Power Apps", "c": "#742774", "p": "M12 2 22 12 12 22 2 12zm0 4.2L6.2 12l5.8 5.8 5.8-5.8z"}, "powerautomate": {"t": "Power Automate", "c": "#0066FF", "p": "M2 4h8l5 8-5 8H2l5-8zM14 4h3l5 8-5 8h-3l5-8z"}},
  // map pin positions as fractions of map.webp (measured from the image)
- mapPts:[[.125,.47],[.19,.66],[.37,.44],[.50,.58],[.685,.55],[.875,.46],[.80,.76]]
+ mapPts:[[.125,.47],[.19,.66],[.37,.44],[.50,.58],[.685,.55],[.80,.76],[.875,.46]]
 };
 
 /* ============================================================ */
 var $=function(i){return document.getElementById(i)};
-var IMGS=["me_walk","sky-day","sky-sunset","sky-night","floor","me","uqu","kidana","wasl","palm","acacia","wall","frame","table","p_securefile","p_washroom","p_meeting","map","m_uqu","m_kidana","m_wasl","m_gallery","m_bench","m_mail","ic_globe","ic_map"];
+var IMGS=["me_walk","me_back","me_cert","sky-day","sky-sunset","sky-night","floor","me","uqu","kidana","wasl","palm","acacia","wall","frame","table","p_securefile","p_washroom","p_meeting","map","m_uqu","m_kidana","m_wasl","m_gallery","m_bench","m_mail","ic_globe","ic_map"];
 var R={};
 var lang="en";try{lang=localStorage.getItem("fa_lang")||"en"}catch(e){}
 var hm=(location.hash||"").match(/lang=(en|ar)/);if(hm)lang=hm[1];
@@ -396,7 +406,7 @@ function deco(cx,big){
 
 function build(){
   W=innerWidth;H=innerHeight;mob=W<700;
-  gh=H*(mob?.3:.34);gx=W*(mob?.24:.22);heroK=mob?1.55:1.85;heroX=mob?W*.7:W*.72;
+  gh=H*(mob?.3:.34);gx=W*(mob?.24:.22);ROOMK=mob?1:1.2;heroK=mob?1.55:1.85;heroX=mob?W*.7:W*.72;
   me.style.height=gh+"px";me.style.width=(gh/ratio("me"))+"px";
   world.innerHTML="";els=[];toolEls=[];frameEls=[];ppEls=[];
   var x=W*1.1;
@@ -430,9 +440,9 @@ function build(){
           f.setAttribute("role","button");f.tabIndex=0;frameEls.push(f);
         });
       }else{
-        var tw=ww*(mob?.86:.8),th=ww*.66*ratio("table"),tl=ww/2-tw/2,tb=H*.05;
+        var tb=H*.05,th=Math.max(H*.1,(H*.04+.4655*gh*ROOMK-tb)/.94),tw=ww*(mob?.86:.66),tl=ww/2-tw/2;
         var tb_=mk("img","",seg);tb_.src="assets/table.webp";tb_.style.cssText="position:absolute;left:"+tl+"px;bottom:"+tb+"px;width:"+tw+"px;height:"+th+"px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.5))";
-        var vis=DATA.projects.filter(function(p){return !p.hidden}),n=vis.length,topY=tb+th*.93,oh=H*.15;
+        var vis=DATA.projects.filter(function(p){return !p.hidden}),n=vis.length,topY=tb+th*.93,oh=H*(mob?.13:.15);
         vis.forEach(function(p,k){
           var t=mk("div","tool",seg),w=oh/ratio(p.img);
           t.dataset.i=DATA.projects.indexOf(p);
@@ -449,6 +459,7 @@ function build(){
     }
   });
   STOPS.forEach(function(s){s.p=s.cx-W*(!mob&&(s.type=="building"||s.type=="skills")?(s.type=="skills"?.6:.62):.5);s.r=Math.max((s.x1-s.x0)/2,W*.3)+W*.12});
+  setWindows();
   maxP=STOPS[STOPS.length-1].p;
   target=Math.min(target,maxP);pos=Math.min(pos,maxP);
   fillText();nightV=-1;cur="";
@@ -511,9 +522,9 @@ function skillWall(seg,ww){
   // painted logos on the wall: not clickable, laid out in the free space beside / above the character
   skLabels=[];
   // seg-local coords; the stop's camera puts the wall centre at W*.6 on desktop, W*.5 on mobile
-  var cxs=mob?W*.5:W*.6,off=ww/2-cxs,cw=gh/ratio("me"),charR=off+gx+cw*.62+24;
+  var cxs=mob?W*.5:W*.6,off=ww/2-cxs,cw=gh*ROOMK/ratio("me"),charR=off+gx+cw*.62+24;
   var half=Math.min(ww*.42,ww/2-charR),L=ww/2-half,R=ww/2+half,top=H*.405,bot=H*.86,compact=mob||R-L<460;
-  if(compact){L=Math.max(ww*.04,off+W*.05);R=Math.min(ww*.96,off+W*.95);top=H*.365;bot=H*.685}
+  if(compact){L=Math.max(ww*.04,off+W*.05);R=Math.min(ww*.96,off+W*.95);top=H*.368;bot=H*(1-.04-.3*ROOMK)-4}
   L-=off;R-=off;
   var rowH=(bot-top)/4,sks=compact?Math.max(18,Math.min(26,(bot-top)*.07)):Math.max(18,Math.min(46,rowH*.36,(R-L)/7*.42));
   var box=mk("div","skw"+(compact?" c":""),seg);
@@ -546,13 +557,22 @@ function blend(p){
   var A=s[i],B=s[Math.min(i+1,s.length-1)],span=(B.p-A.p)||1,t=ease(((p-A.p)/span-.2)/.6);
   return{A:A,B:B,t:t};
 }
-function zoneAt(p){
-  // text shows only when you've (nearly) arrived: a short window around each stop
-  var best=null,bd=1e9,near=Math.max(W*(mob?.22:.13),70);
+function setWindows(){
+  // when each stop's text is on screen (in camera positions):
+  //  buildings: from just before arriving until the character has walked past the building's far edge (+ a beat)
+  //  walls: while the wall fills the middle of the screen, handing over to the next wall at its edge
+  //  contact: shortly after the character leaves the last wall, and it stays to the end
+  var near=Math.max(W*(mob?.22:.13),70),walls=STOPS.filter(function(s){return s.type=="wall"||s.type=="skills"||s.type=="bench"}),last=walls[walls.length-1];
   STOPS.forEach(function(s){
-    var d=p-s.p,inside=s.type=="wall"||s.type=="skills"||s.type=="bench",lo=near*(inside?1.5:1),hi=s.hl2?Math.max(near*2.2,W*.24):lo;
-    if(d>-lo&&d<hi&&Math.abs(d)<bd){bd=Math.abs(d);best=s}
-  });return best}
+    if(s.type=="building"){s.w0=s.p-near;s.w1=s.x1-gx+W*.06}
+    else if(s.type=="end"){s.w0=last?last.x1-gx+W*.04:s.p-near;s.w1=1e12}
+    else{s.w0=s.x0-W/2;s.w1=s===last?s.x1-gx+W*.04:s.x1-W/2}
+  });
+}
+function zoneAt(p){
+  var best=null;
+  STOPS.forEach(function(s){if(p>=s.w0&&p<s.w1&&(!best||s.w0>best.w0))best=s});
+  return best}
 
 var txTimer=0,txHas=false;
 function setText(z,pg){
@@ -585,6 +605,7 @@ function fillZone(z,pg){
     var hasP=DATA.people.some(function(p){return p.stop==z.id});
     L.forEach(function(t,i){var d=mk("div","ln"+(z.type=="building"&&pg==0&&i==0?" meta":""),c);d.style.animationDelay=(.4+i*.14)+"s";d.textContent=t});
   }
+  if(z.type=="building"&&pg==0&&z.link&&z.showLink){var lk=mk("a","ln lk",c);lk.href=z.link;lk.target="_blank";lk.rel="noopener";lk.textContent=T.wlink;lk.style.animationDelay=(.35+L.length*.14)+"s"}
   if(z.type=="building"&&pg==0&&hasP){var hn=mk("div","ln hint",c);hn.textContent=(DATA.slots[z.id]||{}).team?T.tapt:T.tapl;hn.style.animationDelay=(.4+L.length*.14)+"s"}
   layoutCap(z);
 }
@@ -606,6 +627,7 @@ function layoutCap(z){
 function update(t){
   requestAnimationFrame(update);
   var dt=Math.min(.05,(t-lastT)/1000||0);lastT=t;
+  if(holdDir)target=Math.max(0,Math.min(maxP,pos+holdDir*W*.11));
   var d=target-pos,ad=Math.abs(d);
   // walking pace: ease in/out, capped speed so the legs can keep up (far jumps go a bit faster)
   var want=(d<0?-1:1)*Math.min(ad*5,Math.max(W*1.1,ad*.9));vel+=(want-vel)*Math.min(1,dt*8);
@@ -631,24 +653,27 @@ function update(t){
   var e=ease(pos/(W*.7));
   $("hero").style.opacity=Math.max(0,1-e*1.8);
   var z=e<.8?null:zoneAt(pos),pg=0;
-  if(z&&z.hl2)pg=pos>z.p+Math.max(W*.05,Math.max(W*(mob?.22:.13),70)*.6)?1:0;
+  if(z&&z.hl2)pg=pos+gx>z.cx?1:0;
   setText(z,pg);
   $("prog").style.width=(pos/maxP*100)+"%";
   var eE=ease((pos-(maxP-W*.6))/(W*.55));
   var inside=STOPS.filter(function(s){return s.type=="wall"||s.type=="bench"||s.type=="skills"}),ins=0;
   if(inside.length){var a=inside[0],bb=inside[inside.length-1];ins=ease((pos-(a.p-W*.45))/(W*.35))*ease((bb.p+W*.5-pos)/(W*.35))}
-  var hx=heroX,gxB=hx+(gx-hx)*e,endX=mob?W*.74:W*.68,x=gxB+(endX-gxB)*eE;
-  var k=(heroK+(1-heroK)*e)*(1+.22*eE)*(1-.08*ins);
+  // walk on screen towards a clicked object (and back afterwards)
+  var offT=pose?pose.off:0,od=offT-charOff,offStep=Math.sign(od)*Math.min(Math.abs(od),W*.5*dt);charOff+=offStep;
+  var offMoving=Math.abs(od)>.5;
+  var hx=heroX,gxB=hx+(gx-hx)*e,endX=mob?W*.74:W*.68,x=gxB+(endX-gxB)*eE+charOff;
+  var k=(heroK+(1-heroK)*e)*(1+.22*eE)*(1+(ROOMK-1)*ins);
   me.style.left=x+"px";
   // natural two-frame walk, driven by distance travelled so the feet don't slide
   // one cycle = one step: stride (feet apart, body low) → passing (feet together, body high)
-  var stepLen=gh*.27*k,moved=Math.abs(pos-lastPos);lastPos=pos;
+  var stepLen=gh*.27*k,moved=Math.abs(pos-lastPos)+Math.abs(offStep);lastPos=pos;moving=moving||offMoving;
   if(moving){walkP+=Math.min(dt*2.7,moved/stepLen);idleT=0}else{idleT+=dt}
   var fr=walkP%1,striding=moving&&fr<.55,by,rot;
   if(moving){by=-gh*.011*(.5-.5*Math.cos(2*Math.PI*(fr-.275)));rot=.6+.5*Math.sin(2*Math.PI*fr)}
   else{by=Math.sin(t/1000*1.6)*gh*.002;rot=0;walkP=0}
-  meimg.style.opacity=striding?0:1;mewalk.style.opacity=striding?1:0;
-  var dir=target<pos-.5?-1:1;if(!moving)dir=+(me.dataset.dir||1);me.dataset.dir=dir;
+  meimg.style.opacity=striding?0:1;mewalk.style.opacity=striding?1:0;poseTick();
+  var dir=offMoving?(od<0?-1:1):target<pos-.5?-1:1;if(!moving)dir=+(me.dataset.dir||1);me.dataset.dir=dir;
   me.style.setProperty("--bob",by+"px");me.style.setProperty("--rot",(rot*dir)+"deg");me.style.setProperty("--dir",dir);
   me.style.transform="translateX(-50%) scale("+k+")";
   $("shadow").style.transform="translateX(-50%) scaleX("+(striding?1.08:1)+")";
@@ -668,9 +693,40 @@ function openModal(o){
   var a=$("ca");if(o.link){a.href=o.link;a.textContent=o.linkText||DATA.ui[lang].open;a.style.display=""}else a.style.display="none";
   $("modal").classList.add("on");$("cx").focus();
 }
-function closeModal(){$("modal").classList.remove("on");if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+function closeModal(){$("modal").classList.remove("on");endPose();if(lastFocus&&lastFocus.focus)lastFocus.focus()}
 function openCert(i){var c=DATA.certs[i];openModal({t:c.t[lang],m:c.m[lang]})}
-function openProj(i){var p=DATA.projects[i];openModal({t:p.n,m:p.m[lang],d:p.d[lang],images:p.images,link:p.link})}
+// walk to the clicked object, take a pose for a beat, then open its card
+var ROOMK=1,pose=null,meback=$("meback"),mecert=$("mecert"),charOff=0;
+function startPose(kind,el,open){
+  if(pose){if(pose.el===el){clearTimeout(pose.tm);pose.opened=true;open();return}endPose()}
+  // the camera stays put; he walks across the screen to stand in front of the object
+  var r=el.getBoundingClientRect();
+  holdDir=0;target=pos;
+  pose={kind:kind,el:el,open:open,target:pos,off:(r.left+r.width/2)-gx,posed:false,opened:false,tm:0};
+}
+function applyPose(){
+  pose.posed=true;me.classList.add("posing");(pose.kind=="back"?meback:mecert).classList.add("on");
+  if(pose.kind=="cert"){
+    // the frame leaves the wall and lands in his hands
+    var f=pose.el,fr=f.getBoundingClientRect(),mr=me.getBoundingClientRect(),pw=mr.height*486/1160,
+        px=mr.left+mr.width/2-pw/2,cx=px+pw*.69,cy=mr.top+mr.height*.355,w=pw*.5;
+    f.classList.remove("back");f.classList.add("taken");
+    f.style.transform="translate("+(cx-(fr.left+fr.width/2))+"px,"+(cy-(fr.top+fr.height/2))+"px) scale("+(w/fr.width)+")";f.style.opacity="0";
+  }
+  pose.tm=setTimeout(function(){if(pose&&!pose.opened){pose.opened=true;pose.open()}},pose.kind=="cert"?1100:950);
+}
+function endPose(){
+  if(!pose)return;clearTimeout(pose.tm);
+  me.classList.remove("posing");meback.classList.remove("on");mecert.classList.remove("on");
+  if(pose.kind=="cert"){var f=pose.el;f.classList.remove("taken");f.classList.add("back");f.style.transform="";f.style.opacity="";setTimeout(function(){f.classList.remove("back")},600)}
+  pose=null;
+}
+function poseTick(){
+  if(!pose)return;
+  if(Math.abs(target-pose.target)>2){endPose();return}          // the visitor walked away
+  if(!pose.posed&&Math.abs(charOff-pose.off)<1)applyPose();
+}
+function openProj(i){var p=DATA.projects[i];openModal({t:p.n,m:p.m[lang],d:p.d[lang],list:p.f?p.f[lang]:null,images:p.images,link:p.link})}
 $("cx").onclick=closeModal;$("modal").onclick=function(e){if(e.target===$("modal"))closeModal()};
 $("modal").addEventListener("keydown",function(e){if(e.key=="Tab"){var f=[].slice.call($("card").querySelectorAll("button,a[href]")).filter(function(x){return x.offsetParent});if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
 
@@ -713,23 +769,34 @@ $("lang").onclick=function(){lang=lang=="en"?"ar":"en";try{localStorage.setItem(
 
 /* ---------- input ---------- */
 var drag=false,lx=0,dx0=0,dy0=0;
-stage.addEventListener("pointerdown",function(e){drag=true;lx=dx0=e.clientX;dy0=e.clientY;stage.classList.add("drag");try{stage.setPointerCapture(e.pointerId)}catch(x){}});
+stage.addEventListener("pointerdown",function(e){if(e.target.closest("#cap a"))return;drag=true;lx=dx0=e.clientX;dy0=e.clientY;stage.classList.add("drag");try{stage.setPointerCapture(e.pointerId)}catch(x){}});
 stage.addEventListener("pointermove",function(e){if(!drag)return;var dx=e.clientX-lx;lx=e.clientX;go(target-dx*1.4)});
 function up(e){var was=drag;drag=false;stage.classList.remove("drag");
   if(was&&e.type=="pointerup"&&Math.abs(e.clientX-dx0)<6&&Math.abs(e.clientY-dy0)<6){
     var el=document.elementFromPoint(e.clientX,e.clientY),f=el&&el.closest(".frame"),tl=el&&el.closest(".tool"),pp=el&&el.closest(".pp");
-    if(f)openCert(+f.dataset.i);else if(tl)openProj(+tl.dataset.i);else if(pp)openPerson(+pp.dataset.i);
+    if(f)startPose("cert",f,function(){openCert(+f.dataset.i)});else if(tl)startPose("back",tl,function(){openProj(+tl.dataset.i)});else if(pp)openPerson(+pp.dataset.i);
   }}
 stage.addEventListener("pointerup",up);stage.addEventListener("pointercancel",up);
-stage.addEventListener("keydown",function(e){if(e.key=="Enter"||e.key==" "){var f=e.target.closest(".frame"),tl=e.target.closest(".tool"),pp=e.target.closest(".pp");if(f)openCert(+f.dataset.i);if(tl)openProj(+tl.dataset.i);if(pp)openPerson(+pp.dataset.i)}});
+stage.addEventListener("keydown",function(e){if(e.key=="Enter"||e.key==" "){var f=e.target.closest(".frame"),tl=e.target.closest(".tool"),pp=e.target.closest(".pp");if(f)startPose("cert",f,function(){openCert(+f.dataset.i)});if(tl)startPose("back",tl,function(){openProj(+tl.dataset.i)});if(pp)openPerson(+pp.dataset.i)}});
 addEventListener("wheel",function(e){if($("mapv").classList.contains("on")||$("modal").classList.contains("on"))return;e.preventDefault();go(target+(Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY)*1.1)},{passive:false});
 addEventListener("keydown",function(e){
   if(e.key=="Escape"){if($("modal").classList.contains("on"))closeModal();else if($("mapv").classList.contains("on"))closeMap();return}
   if($("mapv").classList.contains("on")||$("modal").classList.contains("on"))return;
-  if(e.key=="ArrowRight"||e.key=="ArrowDown"||e.key=="PageDown"){e.preventDefault();go(target+W*.18)}
-  else if(e.key=="ArrowLeft"||e.key=="ArrowUp"||e.key=="PageUp"){e.preventDefault();go(target-W*.18)}
+  var dk=(e.key=="ArrowRight"||e.key=="ArrowDown")?1:(e.key=="ArrowLeft"||e.key=="ArrowUp")?-1:0;
+  if(dk){e.preventDefault();if(!e.repeat||holdDir!==dk){holdDir=dk;holdT=performance.now();holdFrom=pos}return}
+  if(e.key=="PageDown"){e.preventDefault();go(target+W*.18)}
+  else if(e.key=="PageUp"){e.preventDefault();go(target-W*.18)}
   else if(e.key=="Home")go(0);else if(e.key=="End")go(maxP);
 });
+// arrows: walk at a steady natural pace while held, stop when released (a quick tap = one short step)
+var holdDir=0,holdT=0,holdFrom=0;
+function releaseHold(){if(!holdDir)return;var d=holdDir;holdDir=0;
+  if(performance.now()-holdT<180)go(holdFrom+d*W*.12);else go(pos+d*W*.025)}
+addEventListener("keyup",function(e){
+  var dk=(e.key=="ArrowRight"||e.key=="ArrowDown")?1:(e.key=="ArrowLeft"||e.key=="ArrowUp")?-1:0;
+  if(dk&&dk===holdDir)releaseHold()});
+addEventListener("blur",releaseHold);
+document.addEventListener("visibilitychange",function(){if(document.hidden)releaseHold()});
 var rz=0;addEventListener("resize",function(){clearTimeout(rz);rz=setTimeout(function(){var f=maxP?pos/maxP:0;build();pos=target=f*maxP;if($("mapv").classList.contains("on"))openMap()},140)});
 
 /* ---------- boot ---------- */
