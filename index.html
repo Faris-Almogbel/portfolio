@@ -196,6 +196,7 @@ body.ar .plb{font-family:var(--ar);font-weight:700}
 .pp.hang .chain{margin:0 auto;width:3px;background:repeating-linear-gradient(#e2bd72 0 4px,#7a5524 4px 6px);border-radius:2px}
 .pp.hang .lbody{position:relative}
 .pp.hang.on .sway{animation-duration:3.2s}
+.pp.hang.stand .sway{animation:none;transform-origin:50% 100%}
 @keyframes sway{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
 .pp .tag{position:absolute;left:50%;top:100%;transform:translate(-50%,6px) scale(.9);white-space:nowrap;font-size:12px;font-weight:600;color:#ffe7b5;background:rgba(30,20,10,.74);padding:3px 9px;border-radius:999px;opacity:0;transition:opacity .4s .5s,transform .4s .5s}
 body.ar .pp .tag{font-family:var(--ar)}
@@ -232,6 +233,14 @@ body.ar #card h3{font-family:var(--ar);padding-right:0;padding-left:40px}
 #card .d{margin-top:16px;line-height:1.65;font-size:15px}
 #card ul{margin-top:12px;padding-inline-start:20px;line-height:1.6;font-size:15px}
 #card li{margin:6px 0}
+#capps .aph{margin-top:18px;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+body.ar #capps .aph{letter-spacing:0;font-size:13px}
+#capps .app{margin-top:10px;padding:14px 16px 12px;border-radius:14px;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.22)}
+#capps h4{font-family:var(--serif);font-size:18px;font-weight:700;margin:0}
+body.ar #capps h4{font-family:var(--sans)}
+#capps .am{font-size:12.5px;opacity:.65;margin-top:2px}
+#capps p{margin:8px 0 0;font-size:14.5px;line-height:1.55}
+#capps ul{margin-top:6px}
 #card li::marker{color:var(--accent)}
 #card .gal{display:grid;gap:10px;margin-top:16px}
 #card .gal img{width:100%;border-radius:10px;display:block}
@@ -278,7 +287,7 @@ body.ar #card{direction:rtl}
   <div id="mapc"></div>
 </div>
 
-<div id="modal" role="dialog" aria-modal="true"><div id="card"><div class="seal" id="cs"></div><button class="x" id="cx" aria-label="Close">×</button><div class="m ey" id="ce"></div><h3 id="ct"></h3><div class="m" id="cm"></div><div class="who" id="cw"></div><div class="d" id="cd"></div><ul id="cl"></ul><div class="gal" id="cg"></div><a class="go" id="ca" target="_blank" rel="noopener"></a></div></div>
+<div id="modal" role="dialog" aria-modal="true"><div id="card"><div class="seal" id="cs"></div><button class="x" id="cx" aria-label="Close">×</button><div class="m ey" id="ce"></div><h3 id="ct"></h3><div class="m" id="cm"></div><div class="who" id="cw"></div><div class="d" id="cd"></div><ul id="cl"></ul><div id="capps"></div><div class="gal" id="cg"></div><a class="go" id="ca" target="_blank" rel="noopener"></a></div></div>
 
 <script>
 (function(){
@@ -291,10 +300,10 @@ var DATA={
  ui:{
   en:{map:"map",close:"close ×",route:"The route",hint:"drag, swipe or scroll to start walking →",here:"you are here",
       name:"FARIS",sur:"ALMOGBEL",t1:"Software engineering student. I build things people actually use.",t2:"my story so far, one step at a time.",
-      start:"The start",email:"Email",phone:"Phone",by:"Built by Faris Almogbel",lang:"ع",open:"Open link",lit:"Lit the way",mark:"Left a mark",team:"My team",wlink:"Wasl links ↗",tapl:"Tap a lantern: people who lit the way here",tapt:"Tap a lantern: my team on this project",li:"LinkedIn profile",loading:"loading the walk…"},
+      start:"The start",email:"Email",phone:"Phone",by:"Built by Faris Almogbel",lang:"ع",open:"Open link",lit:"Lit the way",mark:"Left a mark",team:"My team",inside:"Apps inside",wlink:"Wasl links ↗",tapl:"Tap a lantern: people who lit the way here",tapt:"Tap a lantern: my team and our supervisor",li:"LinkedIn profile",loading:"loading the walk…"},
   ar:{map:"الخريطة",close:"إغلاق ×",route:"الخريطة",hint:"اسحب أو مرّر عشان تمشي معي →",here:"موقعك",
       name:"فارس",sur:"المقبل",t1:"طالب هندسة برمجيات، أبني أشياء ينتفع فيها الناس فعلاً.",t2:"قصتي لين الحين، خطوة بخطوة.",
-      start:"البداية",email:"البريد",phone:"الجوال",by:"تم البناء بواسطة فارس المقبل",lang:"EN",open:"افتح الرابط",lit:"نوّر لي الطريق",mark:"ترك فيني أثر",team:"فريقي",wlink:"روابط وصل ↗",tapl:"اضغط على فانوس: ناس نوّروا لي الطريق هنا",tapt:"اضغط على فانوس: فريقي في المشروع",li:"حسابه في LinkedIn",loading:"…"}
+      start:"البداية",email:"البريد",phone:"الجوال",by:"تم البناء بواسطة فارس المقبل",lang:"EN",open:"افتح الرابط",lit:"نوّر لي الطريق",mark:"ترك فيني أثر",team:"فريقي",inside:"التطبيقات",wlink:"روابط وصل ↗",tapl:"اضغط على فانوس: ناس نوّروا لي الطريق هنا",tapt:"اضغط على فانوس: فريقي ومشرف المشروع",li:"حسابه في LinkedIn",loading:"…"}
  },
  stops:[
   {id:"uqu",type:"building",img:"uqu",h:.5,sky:0,night:0,floor:"#fff1d6",map:"m_uqu",
@@ -306,10 +315,10 @@ var DATA={
    name:{en:"KIDANA",ar:"كدانة"},
    hl:{en:["Where I <i>work.</i>"],ar:["وين <em>أشتغل.</em>"]},
    hl2:{en:["What I <i>built.</i>"],ar:["وش <em>بنيت.</em>"]},
-   ln:{en:[["KIDANA · Jul 2026 – present","IT Intern, Smart Solutions & Cities","Internal apps, dashboards and system integrations"],
-           ["Digital solutions with Microsoft Power Platform and web tech","Windows apps that support several departments"]],
-       ar:[["كدانة · يوليو 2026 – الآن","متدرب تقنية معلومات، الحلول الذكية والمدن","تطبيقات داخلية ولوحات بيانات وربط أنظمة"],
-           ["حلول رقمية بـ Microsoft Power Platform وتقنيات الويب","تطبيقات ويندوز تخدم عدة إدارات"]]}},
+   ln:{en:[["KIDANA · Jul 2026 – present","IT Intern, Smart Solutions & Cities – Business Solutions","Internal apps, dashboards and system integrations"],
+           ["Digital solutions with Microsoft Power Platform and web tech","Native Windows apps that make everyday work easier"]],
+       ar:[["كدانة · يوليو 2026 – الآن","متدرب تقنية معلومات، الحلول الذكية والمدن – حلول الأعمال","تطبيقات داخلية ولوحات بيانات وربط أنظمة"],
+           ["حلول رقمية بـ Microsoft Power Platform وتقنيات الويب","تطبيقات ويندوز تسهّل الشغل اليومي"]]}},
   {id:"wasl",type:"building",img:"wasl",h:.46,sky:1,night:.35,floor:"#f2c39a",map:"m_wasl",
    name:{en:"Wasl",ar:"وصل"},link:"https://linktr.ee/WaslUqu",showLink:true,
    hl:{en:["What I <i>led.</i>"],ar:["المشروع اللي <em>قدته.</em>"]},
@@ -339,17 +348,19 @@ var DATA={
   {stop:"uqu",ini:{en:"A",ar:"ع"},n:{en:"Abdullah Al-ameer",ar:"عبدالله الأمير"},li:"https://www.linkedin.com/in/abdullah-al-ameer/"},
   {stop:"uqu",ini:{en:"S",ar:"ش"},n:{en:"Shadi Rizq",ar:"شادي رزق"},li:"https://www.linkedin.com/in/shadi-rizq/"},
   {stop:"uqu",ini:{en:"M",ar:"م"},n:{en:"Muhmmad Alsharif",ar:"محمد الشريف"},li:"https://www.linkedin.com/in/muhmmadalsharif/"},
-  // KIDANA — door left, door right, then top-left, centre (under the logo), top-right
+  // KIDANA — door left, door right, then top-left, centre (under the logo, Akram), top-right
   {stop:"kidana",ini:{en:"N",ar:"ن"},n:{en:"Naji Alnamer",ar:"ناجي النمر"},r:{en:"Business Solutions Manager",ar:"Business Solutions Manager"},li:"https://www.linkedin.com/in/najialnamer/"},
   {stop:"kidana",ini:{en:"H",ar:"ه"},n:{en:"Hawazen Alotaibi",ar:"هوازن العتيبي"},r:{en:"Infrastructure Specialist",ar:"Infrastructure Specialist"},li:"https://www.linkedin.com/in/hawazen-alotaibi-a76bb8209/"},
-  {stop:"kidana",ini:{en:"A",ar:"أ"},n:{en:"Akram Alshehri",ar:"أكرم الشهري"},r:{en:"Sr. Director IT",ar:"Sr. Director IT"},li:"https://www.linkedin.com/in/akram-alshehri/"},
   {stop:"kidana",ini:{en:"A",ar:"ع"},n:{en:"Abdullah Al-Othman",ar:"عبدالله العثمان"},r:{en:"Director, Smart Solutions & Cities",ar:"Director, Smart Solutions & Cities"},li:"https://www.linkedin.com/in/abdullah-al-othman-%E9%98%BF%E6%9D%9C-%D8%B9%D8%A8%D8%AF%D8%A7%D9%84%D9%84%D9%87-%D8%A7%D9%84%D8%B9%D8%AB%D9%85%D8%A7%D9%86-16686755/"},
+  {stop:"kidana",ini:{en:"A",ar:"أ"},n:{en:"Akram Alshehri",ar:"أكرم الشهري"},r:{en:"Sr. Director IT",ar:"Sr. Director IT"},li:"https://www.linkedin.com/in/akram-alshehri/"},
   {stop:"kidana",ini:{en:"H",ar:"ح"},n:{en:"Hanan AlTurkistani",ar:"حنان التركستاني"},r:{en:"Senior Specialist, Business Solutions",ar:"Senior Specialist, Business Solutions"},li:"https://www.linkedin.com/in/hananalturkistani/"},
   // Wasl (my team) — top left, top right, bottom left, bottom right
   {stop:"wasl",ini:{en:"Z",ar:"ز"},n:{en:"Ziyad Alhdriti",ar:"زياد الحضريتي"},li:"https://www.linkedin.com/in/ziyad-alhdriti/"},
   {stop:"wasl",ini:{en:"A",ar:"ع"},n:{en:"Abdullah Alsalem",ar:"عبدالله السالم"},li:"https://www.linkedin.com/in/abdullahnalsalem/"},
   {stop:"wasl",ini:{en:"M",ar:"م"},n:{en:"Moath Bugis",ar:"معاذ بوقس"},li:"https://www.linkedin.com/in/moath-bugis/"},
-  {stop:"wasl",ini:{en:"S",ar:"س"},n:{en:"Saud Aldahasi",ar:"سعود الدهاسي"},li:"https://www.linkedin.com/in/saud-aldahasi/"}
+  {stop:"wasl",ini:{en:"S",ar:"س"},n:{en:"Saud Aldahasi",ar:"سعود الدهاسي"},li:"https://www.linkedin.com/in/saud-aldahasi/"},
+  // Wasl — our project supervisor, standing on the roof in the middle
+  {stop:"wasl",ey:{en:"Our project supervisor",ar:"مشرف مشروعنا"},ini:{en:"A",ar:"أ"},n:{en:"Dr. Ahmed Alharthi",ar:"د. أحمد الحارثي"},li:"https://www.linkedin.com/in/alharthiahmed/"}
  ],
 
  // where lanterns hang: [x, y] as fractions of the building image, chain length (×H); d = desktop, m = mobile
@@ -360,7 +371,7 @@ var DATA={
   // KIDANA: the two at the door first, then top-left, centre under the logo, top-right (mirrored)
   kidana:{lf:.19,s:[[.44,.745,0],[.56,.745,0],[.18,.075,.02],[.5,.358,0],[.82,.075,.02]]},
   // Wasl: two columns, one per side: from the roof and under each upper balcony
-  wasl:{lf:.2,team:true,s:[[.255,.07,.015],[.685,.07,.015],[.255,.39,.015],[.685,.39,.015]]}
+  wasl:{lf:.2,team:true,s:[[.255,.07,.015],[.685,.07,.015],[.255,.39,.015],[.685,.39,.015],[.465,.02,0,"stand"]]}
  },
 
  skills:[
@@ -384,14 +395,19 @@ var DATA={
    s:{"en":"Secure file sharing with a link, a QR code and expiry reminders.","ar":"مشاركة ملفات آمنة برابط ورمز QR وتذكير قبل الانتهاء."},
    images:[],link:""},
   {img:"p_washroom",n:"Smart Washroom Dashboard",m:{"en": "Next.js · React · TypeScript · PostgreSQL (Supabase) · three.js · LoRaWAN IoT", "ar": "Next.js · React · TypeScript · PostgreSQL (Supabase) · three.js · LoRaWAN IoT"},
-   d:{"en": "A real-time control-room platform for the washrooms across the Holy Sites, fed by live IoT sensors.", "ar": "منصة تشغيل لحظية لدورات المياه في المشاعر المقدسة، تتغذى من حساسات IoT مباشرة."},
-   f:{"en": ["Live occupancy for every cabin, air quality per section and a people counter at the entrance", "A 3D digital twin of the Holy Sites, from the whole site down to a single cabin", "Integrated statistics with full history: hourly and daily trends for any date range, with exports", "Alerts, incidents and a health view for every device", "Arabic and English, dark and light, in the KIDANA identity"], "ar": ["إشغال مباشر لكل كابينة، وجودة الهواء لكل قسم، وعدّاد أشخاص عند المدخل", "توأم رقمي ثلاثي الأبعاد للمشاعر، من الموقع كامل لين الكابينة الوحدة", "إحصائيات متكاملة بسجل كامل: اتجاهات بالساعة واليوم لأي فترة، مع التصدير", "تنبيهات وبلاغات، ومتابعة لحالة كل جهاز", "عربي وإنقليزي، فاتح وداكن، بهوية كدانة"]},
-   s:{"en":"Live IoT sensors and a 3D digital twin of the Holy Sites.","ar":"حساسات IoT مباشرة وتوأم رقمي ثلاثي الأبعاد للمشاعر."},
+   d:{"en": "A real-time control-room platform for smart washrooms, fed by live IoT sensors.", "ar": "منصة تشغيل لحظية لدورات المياه الذكية، تتغذى من حساسات IoT مباشرة."},
+   f:{"en": ["Live occupancy for every unit, air quality per section and a people counter at the entrance", "A 3D digital twin of the whole site, from each zone down to every unit", "Integrated statistics with full history: hourly and daily trends for any date range, with exports", "Alerts, incidents and a health view for every device", "Arabic and English, dark and light"], "ar": ["إشغال مباشر لكل وحدة، وجودة الهواء لكل قسم، وعدّاد أشخاص عند المدخل", "توأم رقمي ثلاثي الأبعاد للموقع كامل، من كل منطقة لين كل وحدة", "إحصائيات متكاملة بسجل كامل: اتجاهات بالساعة واليوم لأي فترة، مع التصدير", "تنبيهات وبلاغات، ومتابعة لحالة كل جهاز", "عربي وإنقليزي، فاتح وداكن"]},
+   s:{"en":"Live IoT sensors and a 3D digital twin of every washroom.","ar":"حساسات IoT مباشرة وتوأم رقمي ثلاثي الأبعاد لكل دورة مياه."},
    images:[],link:""},
-  {img:"p_meeting",n:"Meeting Countdown",m:{"en": "Windows app · WPF · C# / .NET · Outlook calendar", "ar": "تطبيق ويندوز · WPF · C# / .NET · تقويم Outlook"},
-   d:{"en": "A native Windows app that turns your Outlook calendar into a live meeting countdown.", "ar": "تطبيق ويندوز يحوّل تقويم Outlook حقك لعدّاد تنازلي مباشر للاجتماعات."},
-   f:{"en": ["Reads your meetings straight from the Outlook calendar", "A live countdown for the current meeting: green, amber at 15 minutes, red at 5", "Lists the next meetings and hides the titles of private ones", "A full-screen room-display mode for meeting rooms"], "ar": ["يسحب اجتماعاتك مباشرة من تقويم Outlook", "عدّاد مباشر للاجتماع الحالي: أخضر، ثم برتقالي إذا بقى 15 دقيقة، وأحمر إذا بقى 5", "يعرض الاجتماعات الجاية، ويخفي عناوين الاجتماعات الخاصة", "وضع شاشة كاملة لقاعات الاجتماعات"]},
-   s:{"en":"Your Outlook meetings as a live countdown on Windows.","ar":"اجتماعات Outlook كعدّاد تنازلي مباشر على ويندوز."},
+  {img:"p_winapps",n:"Windows Apps",m:{"en":"Native Windows desktop apps · WPF · C# / .NET","ar":"تطبيقات ويندوز · WPF · C# / .NET"},
+   d:{"en":"Native Windows apps I build to make everyday work easier.","ar":"تطبيقات ويندوز أبنيها عشان تسهّل الشغل اليومي."},
+   s:{"en":"Native Windows apps that make everyday work easier.","ar":"تطبيقات ويندوز تسهّل الشغل اليومي."},
+   // the apps inside (add more here as they ship)
+   apps:[
+    {n:"Meeting Countdown",m:{"en": "Windows app · WPF · C# / .NET · Outlook calendar", "ar": "تطبيق ويندوز · WPF · C# / .NET · تقويم Outlook"},
+     d:{"en": "A native Windows app that turns your Outlook calendar into a live meeting countdown.", "ar": "تطبيق ويندوز يحوّل تقويم Outlook حقك لعدّاد تنازلي مباشر للاجتماعات."},
+     f:{"en": ["Reads your meetings straight from the Outlook calendar", "A live countdown for the current meeting: green, amber at 15 minutes, red at 5", "Lists the next meetings and hides the titles of private ones", "A full-screen room-display mode for meeting rooms"], "ar": ["يسحب اجتماعاتك مباشرة من تقويم Outlook", "عدّاد مباشر للاجتماع الحالي: أخضر، ثم برتقالي إذا بقى 15 دقيقة، وأحمر إذا بقى 5", "يعرض الاجتماعات الجاية، ويخفي عناوين الاجتماعات الخاصة", "وضع شاشة كاملة لقاعات الاجتماعات"]}}
+   ],
    images:[],link:""},
   {img:"m_wasl",n:"Wasl",hidden:true,m:{en:"Flutter · Spring Boot · PostgreSQL",ar:"Flutter · Spring Boot · PostgreSQL"},
    d:{en:"Graduation project: a platform for university students' transportation and accommodation.",ar:"مشروع التخرج: منصة لنقل وسكن طلاب الجامعة."},
@@ -404,7 +420,7 @@ var DATA={
 
 /* ============================================================ */
 var $=function(i){return document.getElementById(i)};
-var IMGS=["me_walk","me_back","me_cert","sky-day","sky-sunset","sky-night","floor","me","uqu","kidana","wasl","palm","acacia","wall","frame","table","p_securefile","p_washroom","p_meeting","map","m_uqu","m_kidana","m_wasl","m_gallery","m_bench","m_mail","ic_globe","ic_map"];
+var IMGS=["me_walk","me_back","me_cert","sky-day","sky-sunset","sky-night","floor","me","uqu","kidana","wasl","palm","acacia","wall","frame","table","p_securefile","p_washroom","p_winapps","map","m_uqu","m_kidana","m_wasl","m_gallery","m_bench","m_mail","ic_globe","ic_map"];
 var R={};
 var lang="en";try{lang=localStorage.getItem("fa_lang")||"en"}catch(e){}
 var hm=(location.hash||"").match(/lang=(en|ar)/);if(hm)lang=hm[1];
@@ -451,7 +467,7 @@ function build(){
       var sl=DATA.slots[s.id],k=0;
       DATA.people.forEach(function(p,pi){
         if(p.stop!=s.id)return;
-        if(sl){var hg=sl.s[k];if(hg){addHanging(p,pi,{x:x,w:it.w,img:s.img},hg[0],hg[1],hg[2],k,sl.lf)}k++;return}
+        if(sl){var hg=sl.s[k];if(hg){addHanging(p,pi,{x:x,w:it.w,img:s.img},hg[0],hg[1],hg[2],k,sl.lf,hg[3]=="stand")}k++;return}
         var px=mob?x+it.w/2+W*.3:x+it.w*.07;
         addPerson(p,pi,px,p.kind=="flag"?(mob?.26:.32):(mob?.14:.17),p.kind=="flag"?H*.15:H*.1);
       });
@@ -536,12 +552,13 @@ function addPerson(p,i,x,h,bottom){
   mk("span","tag",el);
   var it={el:el,x:x-ww/2,w:ww,dim:null,lit:null};els.push(it);ppEls.push(el);
 }
-function addHanging(p,i,b,fx,fy,ch,k,lf){
+function addHanging(p,i,b,fx,fy,ch,k,lf,stand){
   // lantern hanging on a chain from a point on the building (fractions of the building image)
   var bh=b.w*ratio(b.img),lh=bh*(lf||.2),lw=lh*60/130,chain=Math.max(2,bh*(ch||0)),tot=chain+lh;
   var ax=b.x+b.w*fx,ay=H*.2+bh*(1-fy);
   var el=mk("div","pp hang",world);el.dataset.i=i;el.dataset.stop=p.stop;el.setAttribute("role","button");el.tabIndex=0;
-  el.style.cssText="width:"+lw+"px;height:"+tot+"px;bottom:"+(ay-tot)+"px;--d:"+(k*.22)+"s";
+  if(stand){chain=0;tot=lh}
+  el.style.cssText="width:"+lw+"px;height:"+tot+"px;bottom:"+(stand?ay:ay-tot)+"px;--d:"+(k*.22)+"s";if(stand)el.classList.add("stand");
   var sw=mk("div","sway",el);sw.style.animationDelay=(-k*.7)+"s";
   var ch=mk("div","chain",sw);ch.style.height=chain+"px";
   var lb=mk("div","lbody",sw);lb.style.height=lh+"px";
@@ -551,7 +568,7 @@ function addHanging(p,i,b,fx,fy,ch,k,lf){
 }
 function openPerson(i){
   var p=DATA.people[i],T=DATA.ui[lang],st=STOPS.filter(function(z){return z.id==p.stop})[0];
-  openModal({t:p.n[lang],ey:((DATA.slots[p.stop]||{}).team?T.team:p.kind=="flag"?T.mark:T.lit)+" · "+st.name[lang],who:p.r?p.r[lang]:"",d:p.q?p.q[lang]:"",link:p.li,linkText:T.li,seal:p.ini[lang],letter:true});
+  openModal({t:p.n[lang],ey:(p.ey?p.ey[lang]:(DATA.slots[p.stop]||{}).team?T.team:p.kind=="flag"?T.mark:T.lit)+" · "+st.name[lang],who:p.r?p.r[lang]:"",d:p.q?p.q[lang]:"",link:p.li,linkText:T.li,seal:p.ini[lang],letter:true});
 }
 
 var skLabels=[];
@@ -751,6 +768,10 @@ function openModal(o){
   $("card").classList.toggle("letter",!!o.letter);$("ce").textContent=o.ey||"";$("cw").textContent=o.who||"";$("cw").style.display=o.who?"":"none";$("cs").textContent=o.seal||"";
   $("ct").textContent=o.t;$("cm").textContent=o.m||"";$("cm").style.display=o.m?"":"none";$("cd").textContent=o.d||"";$("cd").style.display=o.d?"":"none";
   $("cl").innerHTML="";(o.list||[]).forEach(function(x){mk("li","",$("cl")).textContent=x});$("cl").style.display=(o.list&&o.list.length)?"":"none";
+  var ap=$("capps");ap.innerHTML="";
+  if(o.apps&&o.apps.length){mk("div","aph",ap).textContent=DATA.ui[lang].inside;
+    o.apps.forEach(function(x){var b=mk("div","app",ap);mk("h4","",b).textContent=x.n;if(x.m){var mm=mk("div","am",b);mm.textContent=x.m[lang]}
+      if(x.d){mk("p","",b).textContent=x.d[lang]}if(x.f){var ul=mk("ul","",b);x.f[lang].forEach(function(t){mk("li","",ul).textContent=t})}})}
   $("cg").innerHTML="";(o.images||[]).forEach(function(s){var im=mk("img","",$("cg"));im.src=s;im.alt=o.t;im.loading="lazy"});
   var a=$("ca");if(o.link){a.href=o.link;a.textContent=o.linkText||DATA.ui[lang].open;a.style.display=""}else a.style.display="none";
   $("modal").classList.add("on");$("cx").focus();
@@ -788,7 +809,7 @@ function poseTick(){
   if(Math.abs(target-pose.target)>2){endPose();return}          // the visitor walked away
   if(!pose.posed&&Math.abs(charOff-pose.off)<1)applyPose();
 }
-function openProj(i){var p=DATA.projects[i];openModal({t:p.n,m:p.m[lang],d:p.d[lang],list:p.f?p.f[lang]:null,images:p.images,link:p.link})}
+function openProj(i){var p=DATA.projects[i];openModal({t:p.n,m:p.m[lang],d:p.d[lang],list:p.f?p.f[lang]:null,apps:p.apps,images:p.images,link:p.link})}
 $("cx").onclick=closeModal;$("modal").onclick=function(e){if(e.target===$("modal"))closeModal()};
 $("modal").addEventListener("keydown",function(e){if(e.key=="Tab"){var f=[].slice.call($("card").querySelectorAll("button,a[href]")).filter(function(x){return x.offsetParent});if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
 
