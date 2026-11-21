@@ -419,8 +419,9 @@ for im, hx, name in [(stand, sx, "me"), (walk, wx, "me_walk")]:
 # extra poses (back view at the projects table, holding a certificate): same scale as the standing frame,
 # feet on the canvas floor; each keeps its own width
 poses = {}
-for name, src, hf in [("me_back", "me_back.jpg", .975), ("me_cert", "me_cert.jpg", 1.0)]:
-    im = keep_largest(chroma(Image.open(RAW / src), "green", nogreen=True))
+for name, src, hf in [("me_back", "me_back.jpg", .975), ("me_cert", "me_cert.png", 1.0)]:
+    raw_im = Image.open(RAW / src)
+    im = keep_largest(raw_im.convert("RGBA") if raw_im.mode == "RGBA" else chroma(raw_im, "green", nogreen=True))
     sc = (stand.height * hf) / im.height
     im = im.resize((max(1, round(im.width * sc)), max(1, round(im.height * sc))), Image.LANCZOS)
     c = Image.new("RGBA", (im.width + 40, H), (0, 0, 0, 0))

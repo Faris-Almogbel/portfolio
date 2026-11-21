@@ -455,7 +455,7 @@ function deco(cx,big){
 
 function build(){
   W=innerWidth;H=innerHeight;mob=W<700;
-  gh=H*(mob?.3:.34);gx=W*(mob?.24:.22);ROOMK=mob?1:1.2;heroK=mob?1.55:1.85;heroX=mob?W*.7:W*.72;
+  gh=H*(mob?.3:.34);gx=W*(mob?.24:.22);ROOMK=1.2;heroK=mob?1.55:1.85;heroX=mob?W*.7:W*.72;
   me.style.height=gh+"px";me.style.width=(gh/ratio("me"))+"px";
   world.innerHTML="";els=[];toolEls=[];frameEls=[];ppEls=[];pbEls=[];
   var x=W*1.1;
@@ -489,7 +489,7 @@ function build(){
           f.setAttribute("role","button");f.tabIndex=0;frameEls.push(f);
         });
       }else{
-        var tb=H*.05,th=Math.max(H*.1,(H*.04+.4655*gh*ROOMK-tb)/.94),tw=ww*(mob?.86:.66),tl=ww/2-tw/2;
+        var tb=H*.05,th=Math.max(H*.1,(H*.04+.4764*gh*ROOMK-tb)/.94),tw=ww*(mob?.86:.66),tl=ww/2-tw/2;
         var tb_=mk("img","",seg);tb_.src="assets/table.webp";tb_.style.cssText="position:absolute;left:"+tl+"px;bottom:"+tb+"px;width:"+tw+"px;height:"+th+"px;filter:drop-shadow(0 14px 18px rgba(0,0,0,.5))";
         var vis=DATA.projects.filter(function(p){return !p.hidden}),n=vis.length,topY=tb+th*.93,oh=H*(mob?.13:.15);
         vis.forEach(function(p,k){
@@ -511,7 +511,7 @@ function build(){
       s.x0=x+W*.2;s.cx=x+W*.5;s.x1=s.cx;x=s.cx+W*.5;
     }
   });
-  STOPS.forEach(function(s){s.p=s.cx-W*(!mob&&(s.type=="building"||s.type=="skills")?(s.type=="skills"?.6:.62):.5);s.r=Math.max((s.x1-s.x0)/2,W*.3)+W*.12});
+  STOPS.forEach(function(s){s.p=s.cx-W*(!mob&&(s.type=="building"||s.type=="skills")?(s.type=="skills"?.6:.62):.5);if(mob&&s.type=="skills")s.p=s.x0+(s.x1-s.x0)*SKM-W/2;s.r=Math.max((s.x1-s.x0)/2,W*.3)+W*.12});
   setWindows();
   maxP=STOPS[STOPS.length-1].p;
   target=Math.min(target,maxP);pos=Math.min(pos,maxP);
@@ -576,9 +576,10 @@ function skillWall(seg,ww){
   // painted logos on the wall: not clickable, laid out in the free space beside / above the character
   skLabels=[];
   // seg-local coords; the stop's camera puts the wall centre at W*.6 on desktop, W*.5 on mobile
-  var cxs=mob?W*.5:W*.6,off=ww/2-cxs,cw=gh*ROOMK/ratio("me"),charR=off+gx+cw*.62+24;
+  // mobile: the camera stops between two wall lamps (SKM of the wall at the centre), leaving the wall clear for the logos
+  var cxs=mob?W*.5:W*.6,off=mob?ww*SKM-W/2:ww/2-cxs,cw=gh*ROOMK/ratio("me"),charR=off+gx+cw*.62+24;
   var half=Math.min(ww*.42,ww/2-charR),L=ww/2-half,R=ww/2+half,top=H*.405,bot=H*.86,compact=mob||R-L<460;
-  if(compact){L=Math.max(ww*.04,off+W*.05);R=Math.min(ww*.96,off+W*.95);top=H*.368;bot=H*(1-.04-.3*ROOMK)-4}
+  if(compact){L=Math.max(ww*.04,off+W*(mob?.1:.05));R=Math.min(ww*.96,off+W*(mob?.9:.95));top=H*(mob?.19:.368);bot=H*(1-.04-(mob?.3:.34)*ROOMK)-6}
   L-=off;R-=off;
   var rowH=(bot-top)/4,sks=compact?Math.max(18,Math.min(26,(bot-top)*.07)):Math.max(18,Math.min(46,rowH*.36,(R-L)/7*.42));
   var box=mk("div","skw"+(compact?" c":""),seg);
@@ -779,7 +780,7 @@ function openModal(o){
 function closeModal(){$("modal").classList.remove("on");endPose();if(lastFocus&&lastFocus.focus)lastFocus.focus()}
 function openCert(i){var c=DATA.certs[i];openModal({t:c.t[lang],m:c.m[lang]})}
 // walk to the clicked object, take a pose for a beat, then open its card
-var ROOMK=1,pose=null,meback=$("meback"),mecert=$("mecert"),charOff=0;
+var ROOMK=1,SKM=.34,pose=null,meback=$("meback"),mecert=$("mecert"),charOff=0;
 function startPose(kind,el,open){
   if(pose){if(pose.el===el){clearTimeout(pose.tm);pose.opened=true;open();return}endPose()}
   // the camera stays put; he walks across the screen to stand in front of the object
@@ -791,8 +792,8 @@ function applyPose(){
   pose.posed=true;me.classList.add("posing");(pose.kind=="back"?meback:mecert).classList.add("on");
   if(pose.kind=="cert"){
     // the frame leaves the wall and lands in his hands
-    var f=pose.el,fr=f.getBoundingClientRect(),mr=me.getBoundingClientRect(),pw=mr.height*486/1160,
-        px=mr.left+mr.width/2-pw/2,cx=px+pw*.69,cy=mr.top+mr.height*.355,w=pw*.5;
+    var f=pose.el,fr=f.getBoundingClientRect(),mr=me.getBoundingClientRect(),pw=mr.height*438/1146,
+        px=mr.left+mr.width/2-pw/2,cx=px+pw*.71,cy=mr.top+mr.height*.333,w=pw*.38;
     f.classList.remove("back");f.classList.add("taken");
     f.style.transform="translate("+(cx-(fr.left+fr.width/2))+"px,"+(cy-(fr.top+fr.height/2))+"px) scale("+(w/fr.width)+")";f.style.opacity="0";
   }
